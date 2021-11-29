@@ -670,16 +670,6 @@ namespace StoryGenerator
             yield return SimpleAction("DrinkRight");
         }
 
-        public IEnumerator WipeLeft()
-        {
-            yield return SimpleAction("WipeLeft");
-        }
-
-        public IEnumerator WipeRight()
-        {
-            yield return SimpleAction("WipeRight");
-        }
-
         public IEnumerator TextLeft()
         {
             yield return SimpleAction("TextLeft");
@@ -700,19 +690,34 @@ namespace StoryGenerator
             yield return SimpleAction("TalkRight");
         }
 
-        public IEnumerator Brush()
+        public IEnumerator BrushLeft()
         {
-            yield return SimpleAction("Brush");
+            yield return SimpleAction("BrushLeft");
         }
 
-        public IEnumerator Cut()
+        public IEnumerator BrushRight()
         {
-            yield return SimpleAction("Cut");
+            yield return SimpleAction("BrushRight");
         }
 
-        public IEnumerator Eat()
+        public IEnumerator CutLeft()
         {
-            yield return SimpleAction("Eat");
+            yield return SimpleAction("CutLeft");
+        }
+
+        public IEnumerator CutRight()
+        {
+            yield return SimpleAction("CutRight");
+        }
+
+        public IEnumerator EatLeft()
+        {
+            yield return SimpleAction("EatLeft");
+        }
+
+        public IEnumerator EatRight()
+        {
+            yield return SimpleAction("EatRight");
         }
 
         public IEnumerator Fold()
@@ -747,6 +752,62 @@ namespace StoryGenerator
             */
         }
 
+        public IEnumerator JumpUp()
+        {
+
+            //Debug.Log("Jump in CharactorControl.cs");
+            //m_animator.SetBool(ANIM_STR_JUMP, true);
+            yield return SimpleAction("JumpUp");
+            Debug.Log("JumpUp in CharactorControl.cs");
+
+            //while ( canContinue(onLateUpdate != null) )
+           // {
+            //  yield return null;
+            //}
+
+            /* Do not need to change charactor state... Add 2021
+            // Reset values
+            m_ikTargets.RevertActionSit();
+            m_nma.enabled = true;
+            // Comment this for now. It might be needed laster on
+            // when we have multiple characters.
+            // m_su.isSittable = true;
+
+            if (stateChar != null)
+            {
+                stateChar.UpdateSittingOn("");
+            }
+            */
+        }
+
+        public IEnumerator JumpDown()
+        {
+
+            //Debug.Log("Jump in CharactorControl.cs");
+            //m_animator.SetBool(ANIM_STR_JUMP, true);
+            yield return SimpleAction("JumpDown");
+            Debug.Log("JumpDown in CharactorControl.cs");
+
+            //while ( canContinue(onLateUpdate != null) )
+           // {
+            //  yield return null;
+            //}
+
+            /* Do not need to change charactor state... Add 2021
+            // Reset values
+            m_ikTargets.RevertActionSit();
+            m_nma.enabled = true;
+            // Comment this for now. It might be needed laster on
+            // when we have multiple characters.
+            // m_su.isSittable = true;
+
+            if (stateChar != null)
+            {
+                stateChar.UpdateSittingOn("");
+            }
+            */
+        }
+
         public IEnumerator Kneel()
         {
             yield return SimpleAction("Kneel");
@@ -757,14 +818,24 @@ namespace StoryGenerator
             yield return SimpleAction("Lift");
         }
 
-        public IEnumerator Drop()
+        public IEnumerator DropLeft()
         {
-            yield return SimpleAction("Drop");
+            yield return SimpleAction("DropLeft");
         }
 
-        public IEnumerator Rinse()
+        public IEnumerator DropRight()
         {
-            yield return SimpleAction("Rinse");
+            yield return SimpleAction("DropRight");
+        }
+
+        public IEnumerator RinseLeft()
+        {
+            yield return SimpleAction("RinseLeft");
+        }
+
+        public IEnumerator RinseRight()
+        {
+            yield return SimpleAction("RinseRight");
         }
 
         public IEnumerator Squat()
@@ -772,14 +843,19 @@ namespace StoryGenerator
             yield return SimpleAction("Squat");
         }
 
-        public IEnumerator Squeeze()
+        public IEnumerator SqueezeLeft()
         {
-            yield return SimpleAction("Squeeze");
+            yield return SimpleAction("SqueezeLeft");
         }
 
-        public IEnumerator Strech()
+        public IEnumerator SqueezeRight()
         {
-            yield return SimpleAction("Strech");
+            yield return SimpleAction("SqueezeRight");
+        }
+
+        public IEnumerator Stretch()
+        {
+            yield return SimpleAction("Stretch");
         }
 
         public IEnumerator SweepLeft()
@@ -792,6 +868,7 @@ namespace StoryGenerator
             yield return SimpleAction("SweepRight");
         }
 
+        /*
         public IEnumerator PutOn()
         {
             yield return SimpleAction("PutOn");
@@ -801,10 +878,16 @@ namespace StoryGenerator
         {
             yield return SimpleAction("PutOff");
         }
+        */
 
-        public IEnumerator Stir()
+        public IEnumerator StirLeft()
         {
-            yield return SimpleAction("Stir");
+            yield return SimpleAction("StirLeft");
+        }
+
+        public IEnumerator StirRight()
+        {
+            yield return SimpleAction("StirRight");
         }
 
         public IEnumerator Throw()
@@ -832,9 +915,24 @@ namespace StoryGenerator
             yield return SimpleAction("WakeUp");
         }
 
-        public IEnumerator Wrap()
+          public IEnumerator WipeLeft()
         {
-            yield return SimpleAction("Wrap");
+            yield return SimpleAction("WipeLeft");
+        }
+
+        public IEnumerator WipeRight()
+        {
+            yield return SimpleAction("WipeRight");
+        }
+
+        public IEnumerator WrapLeft()
+        {
+            yield return SimpleAction("WrapLeft");
+        }
+
+        public IEnumerator WrapRight()
+        {
+            yield return SimpleAction("WrapRight");
         }
 
         public IEnumerator Write()
@@ -847,6 +945,21 @@ namespace StoryGenerator
             yield return SimpleAction("Fall");
         }
 
+        public IEnumerator FallSit()
+        {
+            yield return SimpleAction("FallSit");
+        }
+
+        public IEnumerator FallTable()
+        {
+            yield return SimpleAction("FallTable");
+        }
+
+        public IEnumerator FallBack()
+        {
+            yield return SimpleAction("FallBack");
+        }
+
         public IEnumerator Straddle()
         {
             yield return SimpleAction("Straddle");
@@ -856,7 +969,7 @@ namespace StoryGenerator
         {
             yield return SimpleAction("LegOpp");
         }
-
+        /*
         public IEnumerator StandWith()
         {
             yield return SimpleAction("StandWith");
@@ -865,6 +978,17 @@ namespace StoryGenerator
         public IEnumerator WalkWith()
         {
             yield return SimpleAction("WalkWith");
+        }
+        */
+
+        public IEnumerator TouchLeft()
+        {
+            yield return SimpleAction("TouchLeft");
+        }
+
+        public IEnumerator TouchRight()
+        {
+            yield return SimpleAction("TouchRght");
         }
 
         public IEnumerator ScrubLeft()
@@ -877,10 +1001,12 @@ namespace StoryGenerator
             yield return SimpleAction("ScrubRight");
         }
 
+        /*
         public IEnumerator Sew()
         {
             yield return SimpleAction("Sew");
         }
+        */
 
         public IEnumerator ShakeLeft()
         {
@@ -892,14 +1018,24 @@ namespace StoryGenerator
             yield return SimpleAction("ShakeRight");
         }
 
-        public IEnumerator Smell()
+        public IEnumerator SmellLeft()
         {
-            yield return SimpleAction("Smell");
+            yield return SimpleAction("SmellLeft");
         }
 
-        public IEnumerator Soak()
+        public IEnumerator SmellRight()
         {
-            yield return SimpleAction("Soak");
+            yield return SimpleAction("SmellRight");
+        }
+
+        public IEnumerator SoakLeft()
+        {
+            yield return SimpleAction("SoakLeft");
+        }
+
+        public IEnumerator SoakRight()
+        {
+            yield return SimpleAction("SoakRight");
         }
 
         public IEnumerator PourLeft()

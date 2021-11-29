@@ -410,45 +410,57 @@ namespace StoryGenerator.Utilities
 
     public class BrushAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public BrushAction(int scriptLine)
+        public BrushAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class CutAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public CutAction(int scriptLine)
+        public CutAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class EatAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public EatAction(int scriptLine)
+        public EatAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class FoldAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public FoldAction(int scriptLine)
+        public FoldAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
@@ -458,6 +470,28 @@ namespace StoryGenerator.Utilities
         public int ScriptLine { get; private set; }
 
         public JumpAction(int scriptLine)
+        {
+            ScriptLine = scriptLine;
+        }
+    }
+
+    public class JumpUpAction : IAction
+    {
+        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public int ScriptLine { get; private set; }
+
+        public JumpUpAction(int scriptLine)
+        {
+            ScriptLine = scriptLine;
+        }
+    }
+
+    public class JumpDownAction : IAction
+    {
+        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public int ScriptLine { get; private set; }
+
+        public JumpDownAction(int scriptLine)
         {
             ScriptLine = scriptLine;
         }
@@ -487,23 +521,29 @@ namespace StoryGenerator.Utilities
 
     public class DropAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public DropAction(int scriptLine)
+        public DropAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class RinseAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public RinseAction(int scriptLine)
+        public RinseAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
@@ -520,21 +560,24 @@ namespace StoryGenerator.Utilities
 
     public class SqueezeAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public SqueezeAction(int scriptLine)
+        public SqueezeAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
-    public class StrechAction : IAction
+    public class StretchAction : IAction
     {
         public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
         public int ScriptLine { get; private set; }
 
-        public StrechAction(int scriptLine)
+        public StretchAction(int scriptLine)
         {
             ScriptLine = scriptLine;
         }
@@ -579,23 +622,29 @@ namespace StoryGenerator.Utilities
 
     public class StirAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public StirAction(int scriptLine)
+        public StirAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class ThrowAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public ThrowAction(int scriptLine)
+        public ThrowAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
@@ -647,26 +696,33 @@ namespace StoryGenerator.Utilities
     {
         public ScriptObjectName Name { get; private set; }
         public int ScriptLine { get; private set; }
+        public ScriptObjectName WipeName { get; private set; }
         public IObjectSelector Selector;
+        public bool Clean { get; private set; }
 
 
-        public WipeAction(int scriptLine, IObjectSelector selector, string name, int instance)
+        public WipeAction(int scriptLine, IObjectSelector selector, string name, int instance, string wipeName, int wipeInstance, bool clean)
         {
             ScriptLine = scriptLine;
             Selector = selector;
             Name = new ScriptObjectName(name, instance);
+            WipeName = new ScriptObjectName(wipeName, wipeInstance);
+            Clean = clean;
         }
 
     }
 
     public class WrapAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set;}
+        public IObjectSelector Selector;
         public int ScriptLine { get; private set; }
 
-        public WrapAction(int scriptLine)
+        public WrapAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
@@ -687,6 +743,39 @@ namespace StoryGenerator.Utilities
         public int ScriptLine { get; private set; }
 
         public FallAction(int scriptLine)
+        {
+            ScriptLine = scriptLine;
+        }
+    }
+
+    public class FallSitAction : IAction
+    {
+        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public int ScriptLine { get; private set; }
+
+        public FallSitAction(int scriptLine)
+        {
+            ScriptLine = scriptLine;
+        }
+    }
+
+    public class FallTableAction : IAction
+    {
+        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public int ScriptLine { get; private set; }
+
+        public FallTableAction(int scriptLine)
+        {
+            ScriptLine = scriptLine;
+        }
+    }
+
+    public class FallBackAction : IAction
+    {
+        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public int ScriptLine { get; private set; }
+
+        public FallBackAction(int scriptLine)
         {
             ScriptLine = scriptLine;
         }
@@ -748,15 +837,17 @@ namespace StoryGenerator.Utilities
     public class ScrubAction : IAction
     {
       public ScriptObjectName Name { get; private set; }
+      public ScriptObjectName ScrubName { get; private set;}
         public int ScriptLine { get; private set; }
         public IObjectSelector Selector;
 
 
-        public ScrubAction(int scriptLine, IObjectSelector selector, string name, int instance)
+        public ScrubAction(int scriptLine, IObjectSelector selector, string name, int instance, string scrubName, int scrubInstance)
         {
             ScriptLine = scriptLine;
             Selector = selector;
             Name = new ScriptObjectName(name, instance);
+            ScrubName = new ScriptObjectName(scrubName, scrubInstance);
         }
     }
     public class SewAction : IAction
@@ -785,37 +876,46 @@ namespace StoryGenerator.Utilities
     }
     public class SmellAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set; }
         public int ScriptLine { get; private set; }
+        public IObjectSelector Selector;
 
-        public SmellAction(int scriptLine)
+        public SmellAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
     public class SoakAction : IAction
     {
-        public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
+        public ScriptObjectName Name { get; private set; }
         public int ScriptLine { get; private set; }
+        public IObjectSelector Selector;
 
-        public SoakAction(int scriptLine)
+        public SoakAction(int scriptLine, IObjectSelector selector, string name, int instance)
         {
             ScriptLine = scriptLine;
+            Selector = selector;
+            Name = new ScriptObjectName(name, instance);
         }
     }
 
     public class PourAction : IAction
     {
         public ScriptObjectName Name { get; private set; }
+
+        public ScriptObjectName PourName { get; private set;}
         public int ScriptLine { get; private set; }
         public IObjectSelector Selector;
 
 
-        public PourAction(int scriptLine, IObjectSelector selector, string name, int instance)
+        public PourAction(int scriptLine, IObjectSelector selector, string name, int instance, string pourName, int pourInstance)
         {
             ScriptLine = scriptLine;
             Selector = selector;
             Name = new ScriptObjectName(name, instance);
+            PourName = new ScriptObjectName(pourName, pourInstance);
         }
     }
 
@@ -1431,32 +1531,44 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(BrushAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessBrush((BrushAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(BrushAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessBrush((BrushAction)ac, s)) });
         }
 
         public void AddAction(CutAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessCut((CutAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(CutAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessCut((CutAction)ac, s)) });
         }
 
         public void AddAction(EatAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessEat((CutAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(EatAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessEat((EatAction)ac, s)) });
         }
 
         public void AddAction(FoldAction a)
         {
-            //Debug.Log(" I am at nAddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFold((FoldAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(FoldAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFold((FoldAction)ac, s)) });
         }
 
         public void AddAction(JumpAction a)
         {
             Debug.Log(" I am at AddActtion(JumpAxtion a) in ScriptExcution.cs");
             script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessJump((JumpAction)ac, s)) });
+        }
+
+        public void AddAction(JumpUpAction a)
+        {
+            Debug.Log(" I am at AddActtion(JumpAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessJumpUp((JumpUpAction)ac, s)) });
+        }
+
+        public void AddAction(JumpDownAction a)
+        {
+            Debug.Log(" I am at AddActtion(JumpAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessJumpDown((JumpDownAction)ac, s)) });
         }
 
         public void AddAction(KneelAction a)
@@ -1473,32 +1585,32 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(DropAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessDrop((DropAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(DropAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessDrop((DropAction)ac, s)) });
         }
 
         public void AddAction(RinseAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessRinse((RinseAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(RinseAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessRinse((RinseAction)ac, s)) });
         }
 
         public void AddAction(SquatAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSquat((SquatAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(SquatAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSquat((SquatAction)ac, s)) });
         }
 
         public void AddAction(SqueezeAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSqueeze((SqueezeAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(SqueezeAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSqueeze((SqueezeAction)ac, s)) });
         }
 
-        public void AddAction(StrechAction a)
+        public void AddAction(StretchAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStrech((StrechAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(StretchAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStretch((StretchAction)ac, s)) });
         }
 
         public void AddAction(SweepAction a)
@@ -1521,8 +1633,8 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(StirAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStir((StirAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(StirAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStir((StirAction)ac, s)) });
         }
 
         public void AddAction(ThrowAction a)
@@ -1539,8 +1651,8 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(UnFoldAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessUnFold((UnFoldAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(UnfoldAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessUnFold((UnFoldAction)ac, s)) });
         }
 
         public void AddAction(VacuumAction a)
@@ -1551,8 +1663,8 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(WakeUpAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWakeUp((WakeUpAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(WakeupAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWakeUp((WakeUpAction)ac, s)) });
         }
 
         public void AddAction(WipeAction a)
@@ -1563,8 +1675,8 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(WrapAction a)
         {
-            //Debug.Log(" I am at AddActtion(JumoAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWrap((WrapAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(WrapAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWrap((WrapAction)ac, s)) });
         }
 
         public void AddAction(WriteAction a)
@@ -1577,6 +1689,24 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log(" I am at AddActtion(FallAxtion a) in ScriptExcution.cs");
             script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFall((FallAction)ac, s)) });
+        }
+
+        public void AddAction(FallSitAction a)
+        {
+            Debug.Log(" I am at AddActtion(FallSitAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFallSit((FallSitAction)ac, s)) });
+        }
+
+        public void AddAction(FallTableAction a)
+        {
+            Debug.Log(" I am at AddActtion(FallTableAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFallTable((FallTableAction)ac, s)) });
+        }
+
+        public void AddAction(FallBackAction a)
+        {
+            Debug.Log(" I am at AddActtion(FallBackAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessFallBack((FallBackAction)ac, s)) });
         }
 
         public void AddAction(StandAction a)    // no needed already impulement as stand up
@@ -1593,34 +1723,36 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(LegOppAction a)
         {
-            //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessLegOpp((LegOppAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessLegOpp((LegOppAction)ac, s)) });
         }
 
+        /*
         public void AddAction(StandWithAction a)
         {
-            //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStandWith((StandWithAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessStandWith((StandWithAction)ac, s)) });
         }
 
         public void AddAction(WalkWithAction a)
         {
-            //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWalkWith((WalkWithAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessWalkWith((WalkWithAction)ac, s)) });
         }
-
+        */
         public void AddAction(ScrubAction a)
         {
             Debug.Log(" I am at AddActtion(ScrubAxtion a) in ScriptExcution.cs");
             script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessScrub((ScrubAction)ac, s)) });
         }
 
+        /*
         public void AddAction(SewAction a)
         {
             //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
             //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSew((SewAction)ac, s)) });
         }
-
+        */
         public void AddAction(ShakeAction a)
         {
             Debug.Log(" I am at AddActtion(ShakeAxtion a) in ScriptExcution.cs");
@@ -1629,14 +1761,14 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(SmellAction a)
         {
-            //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSmell((Action)ac, s)) });
+            Debug.Log(" I am at AddActtion(SmellAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSmell((SmellAction)ac, s)) });
         }
 
         public void AddAction(SoakAction a)
         {
-            //Debug.Log(" I am at AddActtion(WipeAxtion a) in ScriptExcution.cs");
-            //script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSoak((SoakAction)ac, s)) });
+            Debug.Log(" I am at AddActtion(SoakAxtion a) in ScriptExcution.cs");
+            script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessSoak((SoakAction)ac, s)) });
         }
 
         public void AddAction(PourAction a)
@@ -2931,13 +3063,171 @@ namespace StoryGenerator.Utilities
             return StateList.Empty;
         }
 
-        private IEnumerable<IStateGroup> ProcessBruch(JumpAction a, State current)
+        private IEnumerable<IStateGroup> ProcessBrush(BrushAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessBrush in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS BRUSH", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessBrushAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessBrush on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessBrushAction(a, s));
+            }
+            return StateList.Empty;
+        }
+
+        private IEnumerable<IStateGroup> ProcessCut(CutAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessCut in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS CUT", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessCutAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessCut on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessCutAction(a, s));
+            }
+            return StateList.Empty;
+        }
+
+        private IEnumerable<IStateGroup> ProcessEat(EatAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessEat in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS EAT", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessEatAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessEat on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessEatAction(a, s));
+            }
+            return StateList.Empty;
+        }
+
+        private IEnumerable<IStateGroup> ProcessDrop(DropAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessDrop in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS DROP", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessDropAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessDrop on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessDropAction(a, s));
+            }
+            return StateList.Empty;
+        }
+
+        private IEnumerable<IStateGroup> ProcessRinse(RinseAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessRinse in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS Rinse", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessRinseAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessRinse on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessRinseAction(a, s));
+            }
+            return StateList.Empty;
+        }
+         private IEnumerable<IStateGroup> ProcessSquat(SquatAction a, State current)
+        {
+
+            Debug.Log("ProcessSquat... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteSquat);
+                yield return s;
+            //}
+
+        }
+        private IEnumerable<IStateGroup> ProcessSqueeze(SqueezeAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessSqueeze in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS SQUEEZE", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessSqueezeAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessSqueeze on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessSqueezeAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        private IEnumerable<IStateGroup> ProcessFold(FoldAction a, State current)
+        {
+
+            Debug.Log("ProcessFold... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteFold);
+                yield return s;
+            //}
+
+        }
+        private IEnumerable<IStateGroup> ProcessJump(JumpAction a, State current)
         {
 
             Debug.Log("ProcessJump... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
             //if ((string)current.GetObject("CHARACTER_STATE") == null)
             //{
-                State s = new State(current, a, current.InteractionPosition, ExecuteBrush);
+                State s = new State(current, a, current.InteractionPosition, ExecuteJump);
                 yield return s;
             //}
 
@@ -2957,13 +3247,41 @@ namespace StoryGenerator.Utilities
             }
             */
         }
-        private IEnumerable<IStateGroup> ProcessJump(JumpAction a, State current)
+
+        private IEnumerable<IStateGroup> ProcessJumpUp(JumpUpAction a, State current)
         {
 
-            Debug.Log("ProcessJump... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            Debug.Log("ProcessJumpUp... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
             //if ((string)current.GetObject("CHARACTER_STATE") == null)
             //{
-                State s = new State(current, a, current.InteractionPosition, ExecuteJump);
+                State s = new State(current, a, current.InteractionPosition, ExecuteJumpUp);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessJumpDown(JumpDownAction a, State current)
+        {
+
+            Debug.Log("ProcessJumpDown... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteJumpDown);
                 yield return s;
             //}
 
@@ -3036,78 +3354,13 @@ namespace StoryGenerator.Utilities
             */
         }
 
-         private IEnumerable<IStateGroup> ProcessSweep(SweepAction a, State current)
-        {
-            Debug.Log("I am at ProcessSweep in ScriptExcution.cs  " + a.Name);
-            GameObject go = current.GetScriptGameObject(a.Name);
-            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
-            if (go == null)
-            {
-                report.AddItem("PROCESS SWEEP", $"Not found object: {a.Name.Name}");
-            }
-            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
-            {
-                return ProcessSweepAction(a, current);
-            }
-            else
-            {
-                Debug.Log("I am at ProcessWipe on target object in ScriptExcution.cs  ");
-                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
-                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessSweepAction(a, s));
-            }
-            return StateList.Empty;
-        }
-        // Add 2021
-        private IEnumerable<IStateGroup> ProcessWipe(WipeAction a, State current)
-        {
-            Debug.Log("I am at ProcessWipe in ScriptExcution.cs  " + a.Name);
-            GameObject go = current.GetScriptGameObject(a.Name);
-            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
-            if (go == null)
-            {
-                report.AddItem("PROCESS WIPE", $"Not found object: {a.Name.Name}");
-            }
-            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
-            {
-                return ProcessWipeAction(a, current);
-            }
-            else
-            {
-                Debug.Log("I am at ProcessWipe on target object in ScriptExcution.cs  ");
-                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
-                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessWipeAction(a, s));
-            }
-            return StateList.Empty;
-        }
-        private IEnumerable<IStateGroup> ProcessScrub(ScrubAction a, State current)
-        {
-            Debug.Log("I am at ProcessScrub in ScriptExcution.cs  " + a.Name);
-            GameObject go = current.GetScriptGameObject(a.Name);
-            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
-            if (go == null)
-            {
-                report.AddItem("PROCESS SCRUB", $"Not found object: {a.Name.Name}");
-            }
-            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
-            {
-                return ProcessScrubAction(a, current);
-            }
-            else
-            {
-                Debug.Log("I am at ProcessWipe on target object in ScriptExcution.cs  ");
-                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
-                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessScrubAction(a, s));
-            }
-            return StateList.Empty;
-        }
-
-        private IEnumerable<IStateGroup> ProcessStraddle(StraddleAction a, State current)
+         private IEnumerable<IStateGroup> ProcessStretch(StretchAction a, State current)
         {
 
-            Debug.Log("ProcessStraddle... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            Debug.Log("ProcessStretch... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
             //if ((string)current.GetObject("CHARACTER_STATE") == null)
             //{
-                State s = new State(current, a, current.InteractionPosition, ExecuteStraddle);
+                State s = new State(current, a, current.InteractionPosition, ExecuteStretch);
                 yield return s;
             //}
 
@@ -3127,28 +3380,50 @@ namespace StoryGenerator.Utilities
             }
             */
         }
-        private IEnumerable<IStateGroup> ProcessShake(ShakeAction a, State current)
+         private IEnumerable<IStateGroup> ProcessSweep(SweepAction a, State current)
         {
-            Debug.Log("I am at ProcessShake in ScriptExcution.cs  " + a.Name);
+            Debug.Log("I am at ProcessSweep in ScriptExcution.cs  " + a.Name);
             GameObject go = current.GetScriptGameObject(a.Name);
             Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
             if (go == null)
             {
-                report.AddItem("PROCESS Shake", $"Not found object: {a.Name.Name}");
+                report.AddItem("PROCESS SWEEP", $"Not found object: {a.Name.Name}");
             }
             else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
             {
-                return ProcessShakeAction(a, current);
+                return ProcessSweepAction(a, current);
             }
             else
             {
-                Debug.Log("I am at ProcessShake on target object in ScriptExcution.cs  ");
+                Debug.Log("I am at ProcessSweep on target object in ScriptExcution.cs  ");
                 GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
-                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessShakeAction(a, s));
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessSweepAction(a, s));
             }
             return StateList.Empty;
         }
-
+        
+         private IEnumerable<IStateGroup> ProcessStir(StirAction a, State current)
+        {
+            Debug.Log("I am at ProcessStir in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS STIR", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessStirAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessStir on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessStirAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        
         private IEnumerable<IStateGroup> ProcessThrow(ThrowAction a, State current)
         {
 
@@ -3202,6 +3477,33 @@ namespace StoryGenerator.Utilities
             }
             */
         }
+
+        private IEnumerable<IStateGroup> ProcessUnFold(UnFoldAction a, State current)
+        {
+
+            Debug.Log("ProcessUnFlod... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteUnFold);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
         private IEnumerable<IStateGroup> ProcessVacuum(VacuumAction a, State current)
         {
 
@@ -3229,6 +3531,75 @@ namespace StoryGenerator.Utilities
             */
         }
 
+        private IEnumerable<IStateGroup> ProcessWakeUp(WakeUpAction a, State current)
+        {
+
+            Debug.Log("ProcessWakeUp... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteWakeUp);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+        private IEnumerable<IStateGroup> ProcessWipe(WipeAction a, State current)
+        {
+            Debug.Log("I am at ProcessWipe in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS WIPE", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessWipeAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessWipe on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessWipeAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        private IEnumerable<IStateGroup> ProcessWrap(WrapAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessWrap in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS WRAP", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessWrapAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessWrap on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessWrapAction(a, s));
+            }
+            return StateList.Empty;
+        }
         private IEnumerable<IStateGroup> ProcessWrite(WriteAction a, State current)
         {
 
@@ -3282,6 +3653,253 @@ namespace StoryGenerator.Utilities
             }
             */
         }
+
+        private IEnumerable<IStateGroup> ProcessFallSit(FallSitAction a, State current)
+        {
+
+            Debug.Log("ProcessFallSit... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteFallSit);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessFallTable(FallTableAction a, State current)
+        {
+
+            Debug.Log("ProcessFallTable... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteFallTable);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessFallBack(FallBackAction a, State current)
+        {
+
+            Debug.Log("ProcessFallBack... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteFallBack);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessStraddle(StraddleAction a, State current)
+        {
+
+            Debug.Log("ProcessStraddle... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteStraddle);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessLegOpp(LegOppAction a, State current)
+        {
+
+            Debug.Log("ProcessLegOpp... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteLegOpp);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+
+        private IEnumerable<IStateGroup> ProcessLegopp(LegOppAction a, State current)
+        {
+
+            Debug.Log("ProcessLegopp... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            //if ((string)current.GetObject("CHARACTER_STATE") == null)
+            //{
+                State s = new State(current, a, current.InteractionPosition, ExecuteLegOpp);
+                yield return s;
+            //}
+
+            /*
+            if ((string)current.GetObject("CHARACTER_STATE") == "SITTING")
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStandup);
+                s.RemoveObject("CHARACTER_STATE");
+                s.RemoveObject("GOTO_SIT_LOOK_AT_OBJECT");
+                s.RemoveObject("GOTO_SIT_TARGET");
+                yield return s;
+            }
+            else
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteNone);
+                yield return s;
+            }
+            */
+        }
+        private IEnumerable<IStateGroup> ProcessScrub(ScrubAction a, State current)
+        {
+
+            Debug.Log("I am at ProcessScrub in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS SCRUB", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessScrubAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessScrub on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessScrubAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        private IEnumerable<IStateGroup> ProcessShake(ShakeAction a, State current)
+        {
+            Debug.Log("I am at ProcessShake in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS SHAKE", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessShakeAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessShake on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessShakeAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        private IEnumerable<IStateGroup> ProcessSmell(SmellAction a, State current)
+        {
+            Debug.Log("I am at ProcessSmell in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS SMELL", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessSmellAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessSmell on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessSmellAction(a, s));
+            }
+            return StateList.Empty;
+        }
+        private IEnumerable<IStateGroup> ProcessSoak(SoakAction a, State current)
+        {
+            Debug.Log("I am at ProcessSoak in ScriptExcution.cs  " + a.Name);
+            GameObject go = current.GetScriptGameObject(a.Name);
+            Debug.Log("GameObject Name = " + go.name + "  in ScriptExcution.cs  ");
+            if (go == null)
+            {
+                report.AddItem("PROCESS POUR", $"Not found object: {a.Name.Name}");
+            }
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT") || go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                return ProcessSoakAction(a, current);
+            }
+            else
+            {
+                Debug.Log("I am at ProcessShake on target object in ScriptExcution.cs  ");
+                GrabAction ga = new GrabAction(a.ScriptLine, a.Selector, a.Name.Name, a.Name.Instance);
+                return CreateStateGroup(current, s => ProcessGrab(ga, s), s => ProcessSoakAction(a, s));
+            }
+            return StateList.Empty;
+        }
         private IEnumerable<IStateGroup> ProcessPour(PourAction a, State current)
         {
             Debug.Log("I am at ProcessPour in ScriptExcution.cs  " + a.Name);
@@ -3304,6 +3922,156 @@ namespace StoryGenerator.Utilities
             return StateList.Empty;
         }
         
+
+        private IEnumerable<IStateGroup> ProcessBrushAction(BrushAction a, State current)
+        {
+            Debug.Log("I am at ProcessBrushAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS BRUSH", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteBrush);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteBrush);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessCutAction(CutAction a, State current)
+        {
+            Debug.Log("I am at ProcessCutAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS CUT", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteCut);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteCut);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessEatAction(EatAction a, State current)
+        {
+            Debug.Log("I am at ProcessEatAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS EAT", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteEat);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteEat);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessDropAction(DropAction a, State current)
+        {
+            Debug.Log("I am at ProcessDropAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS DROP", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteDrop);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteDrop);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessRinseAction(RinseAction a, State current)
+        {
+            Debug.Log("I am at ProcessRinseAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS RINSE", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteRinse);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteRinse);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessSqueezeAction(SqueezeAction a, State current)
+        {
+            Debug.Log("I am at ProcessSqueezeAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS SQUEEZE", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSqueeze);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSqueeze);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
          private IEnumerable<IStateGroup> ProcessSweepAction(SweepAction a, State current)
         {
             Debug.Log("I am at ProcessSweepAction in ScriptExcution.cs");
@@ -3323,6 +4091,31 @@ namespace StoryGenerator.Utilities
             else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
             {
                 State s = new State(current, a, current.InteractionPosition, ExecuteSweep);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+
+        private IEnumerable<IStateGroup> ProcessStirAction(StirAction a, State current)
+        {
+            Debug.Log("I am at ProcessStirAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS STIR", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStir);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteStir);
                 s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
                 yield return s;
             }
@@ -3352,7 +4145,30 @@ namespace StoryGenerator.Utilities
             }
           
         }
+        private IEnumerable<IStateGroup> ProcessWrapAction(WrapAction a, State current)
+        {
+            Debug.Log("I am at ProcessWrapAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
 
+            if (go == null)
+            {
+                report.AddItem("PROCESS WIPE", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteWrap);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteWrap);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
         private IEnumerable<IStateGroup> ProcessScrubAction(ScrubAction a, State current)
         {
             Debug.Log("I am at ProcessScrubAction in ScriptExcution.cs");
@@ -3403,6 +4219,54 @@ namespace StoryGenerator.Utilities
           
         }
 
+        private IEnumerable<IStateGroup> ProcessSmellAction(SmellAction a, State current)
+        {
+            Debug.Log("I am at ProcessSmellAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS POUR", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSmell);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSmell);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
+           private IEnumerable<IStateGroup> ProcessSoakAction(SoakAction a, State current)
+        {
+            Debug.Log("I am at ProcessSoakAction in ScriptExcution.cs");
+            GameObject go = current.GetScriptGameObject(a.Name);
+
+            if (go == null)
+            {
+                report.AddItem("PROCESS POUR", $"Not found object: {a.Name.Name}");
+            }
+            
+            else if (go == current.GetGameObject("RIGHT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSoak);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.RightHand);
+                yield return s;
+            }
+            else if (go == current.GetGameObject("LEFT_HAND_OBJECT"))
+            {
+                State s = new State(current, a, current.InteractionPosition, ExecuteSoak);
+                s.AddObject("INTERACTION_HAND", FullBodyBipedEffector.LeftHand);
+                yield return s;
+            }
+          
+        }
         private IEnumerable<IStateGroup> ProcessPourAction(PourAction a, State current)
         {
             Debug.Log("I am at ProcessPourAction in ScriptExcution.cs");
@@ -4242,26 +5106,79 @@ namespace StoryGenerator.Utilities
 
         private IEnumerator ExecuteBrush(State s)
         {
-            Debug.Log("Execute Brush...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.BRUSH, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Brush());
+            //Debug.Log("Execute Brush...");
+            //yield return new WaitForSeconds(0.5f);
+            //recorder.MarkActionStart(InteractionType.BRUSH, s.Action.ScriptLine);
+            //yield return characterControl.StartCoroutine(characterControl.Brush());
+
+            Debug.Log("I am at ExcuteBrush in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.BrushLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.BrushRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteCut(State s)
         {
-            Debug.Log("Execute Cut...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.CUT, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Cut());
+            Debug.Log("I am at ExcuteCut in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.CutLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.CutRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteEat(State s)
         {
-            Debug.Log("Execute Eat...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.EAT, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Eat());
+            Debug.Log("I am at ExcuteEat in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.EatLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.EatRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteFold(State s)
@@ -4278,6 +5195,22 @@ namespace StoryGenerator.Utilities
             yield return new WaitForSeconds(0.5f);
             recorder.MarkActionStart(InteractionType.JUMP, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.Jump());
+        }
+
+        private IEnumerator ExecuteJumpUp(State s)
+        {
+            Debug.Log("Execute JumpUp...");
+            yield return new WaitForSeconds(0.5f);
+            recorder.MarkActionStart(InteractionType.JUMP, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.JumpUp());
+        }
+
+        private IEnumerator ExecuteJumpDown(State s)
+        {
+            Debug.Log("Execute JumpDown...");
+            yield return new WaitForSeconds(0.5f);
+            recorder.MarkActionStart(InteractionType.JUMP, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.JumpDown());
         }
 
         private IEnumerator ExecuteKneel(State s)
@@ -4298,42 +5231,90 @@ namespace StoryGenerator.Utilities
 
         private IEnumerator ExecuteDrop(State s)
         {
-            Debug.Log("Execute Drop...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.DROP, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Drop());
+            Debug.Log("I am at ExcuteDrop in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.DropLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.DropRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteRinse(State s)
         {
-            Debug.Log("Execute Rinse...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.RINSE, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Rinse());
+            Debug.Log("I am at ExcuteRinse in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.RinseLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.RinseRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteSquat(State s)
         {
             Debug.Log("Execute Squat...");
             yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.SQUART, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SQUAT, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.Squat());
         }
 
         private IEnumerator ExecuteSqueeze(State s)
         {
-            Debug.Log("Execute Squeeze...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.SQUEEZE, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Squeeze());
+            Debug.Log("I am at ExcuteSqueeze in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.SqueezeLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.SqueezeRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
-        private IEnumerator ExecuteStrech(State s)
+        private IEnumerator ExecuteStretch(State s)
         {
-            Debug.Log("Execute Strech...");
+            Debug.Log("Execute Stretch...");
             yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.STRECH, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Strech());
+            recorder.MarkActionStart(InteractionType.STRETCH, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.Stretch());
         }
 
         private IEnumerator ExecuteSweep(State s)
@@ -4360,6 +5341,7 @@ namespace StoryGenerator.Utilities
             }
         }
 
+        /*
         private IEnumerator ExecutePutOn(State s)
         {
             Debug.Log("Execute PutOn...");
@@ -4375,13 +5357,29 @@ namespace StoryGenerator.Utilities
             recorder.MarkActionStart(InteractionType.PUTOFF, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.PutOff());
         }
-
+        */
         private IEnumerator ExecuteStir(State s)
         {
-            Debug.Log("Execute Stir...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.STIR, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Stir());
+            Debug.Log("I am at ExcuteStir in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.StirLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.StirRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteThrow(State s)
@@ -4450,10 +5448,26 @@ namespace StoryGenerator.Utilities
 
        private IEnumerator ExecuteWrap(State s)
         {
-            Debug.Log("Execute Wrap...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.WARP, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Wrap());
+            Debug.Log("I am at ExcuteWrap in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.WrapLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.WrapRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteWrite(State s)
@@ -4472,6 +5486,31 @@ namespace StoryGenerator.Utilities
             yield return characterControl.StartCoroutine(characterControl.Fall());
         }
 
+        private IEnumerator ExecuteFallSit(State s)
+        {
+            Debug.Log("Execute FallSit...");
+            yield return new WaitForSeconds(0.5f);
+            recorder.MarkActionStart(InteractionType.FALL, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.FallSit());
+        }
+
+        private IEnumerator ExecuteFallTable(State s)
+        {
+            Debug.Log("Execute FallTable...");
+            yield return new WaitForSeconds(0.5f);
+            recorder.MarkActionStart(InteractionType.FALL, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.FallTable());
+        }
+
+        private IEnumerator ExecuteFallBack(State s)
+        {
+            Debug.Log("Execute FallBack...");
+            yield return new WaitForSeconds(0.5f);
+            recorder.MarkActionStart(InteractionType.FALL, s.Action.ScriptLine);
+            yield return characterControl.StartCoroutine(characterControl.FallBack());
+        }
+
+        /*
         private IEnumerator ExecuteStand(State s)
         {
             Debug.Log("Execute Stand...");
@@ -4479,7 +5518,7 @@ namespace StoryGenerator.Utilities
             recorder.MarkActionStart(InteractionType.STAND, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.Stand());
         }
-
+        */
         private IEnumerator ExecuteStraddle(State s)
         {
             Debug.Log("Execute Straddle...");
@@ -4496,6 +5535,7 @@ namespace StoryGenerator.Utilities
             yield return characterControl.StartCoroutine(characterControl.LegOpp());
         }
 
+        /*
         private IEnumerator ExecuteStandWith(State s)
         {
             Debug.Log("Execute StandWith...");
@@ -4503,7 +5543,7 @@ namespace StoryGenerator.Utilities
             recorder.MarkActionStart(InteractionType.STANDWITH, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.StandWith());
         }
-
+    
         private IEnumerator ExecuteWalkWith(State s)
         {
             Debug.Log("Execute WalkWith...");
@@ -4511,6 +5551,7 @@ namespace StoryGenerator.Utilities
             recorder.MarkActionStart(InteractionType.WALKWITH, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.WalkWith());
         }
+        */
 
         private IEnumerator ExecuteScrub(State s)
         {
@@ -4535,7 +5576,7 @@ namespace StoryGenerator.Utilities
                         cameraControls[cam_id].ClearVisibleArea();
             }
         }
-
+        /*
         private IEnumerator ExecuteSew(State s)
         {
             Debug.Log("Execute Sew...");
@@ -4543,7 +5584,7 @@ namespace StoryGenerator.Utilities
             recorder.MarkActionStart(InteractionType.SEW, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.Sew());
         }
-
+        */
         private IEnumerator ExecuteShake(State s)
         {
             Debug.Log("I am at ExcuteShake in ScriptExcution.cs");
@@ -4570,18 +5611,50 @@ namespace StoryGenerator.Utilities
 
         private IEnumerator ExecuteSmell(State s)
         {
-            Debug.Log("Execute Smell...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.SMELL, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Smell());
+            Debug.Log("I am at ExcuteSmell in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.SmellLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.SmellRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecuteSoak(State s)
         {
-            Debug.Log("Execute Soak...");
-            yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.SOAK, s.Action.ScriptLine);
-            yield return characterControl.StartCoroutine(characterControl.Soak());
+            Debug.Log("I am at ExcuteSoak in ScriptExcution.cs");
+            var intHand = (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND");
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
+            }
+            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            if (intHand == FullBodyBipedEffector.LeftHand)
+                yield return characterControl.SoakLeft();
+            else if (intHand == FullBodyBipedEffector.RightHand)
+                yield return characterControl.SoakRight();
+
+            if (cameraControls != null)
+            {
+                for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
+                    if (cameraControls[cam_id] != null)
+                        cameraControls[cam_id].ClearVisibleArea();
+            }
         }
 
         private IEnumerator ExecutePour(State s)
@@ -5646,16 +6719,40 @@ namespace StoryGenerator.Utilities
                     sExecutor.AddAction(new OpenAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0, true));
                     break;
                 case InteractionType.BRUSH: // Add 2021
+                    Debug.Log(" Brush !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new BrushAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.CUT:   // Add 2021
+                    Debug.Log(" Cut !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new CutAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.EAT:   // Add 2021
+                    Debug.Log(" Eat !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new EatAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.FOLD:  // Add 2021
+                    Debug.Log(" Flod!!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new FoldAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.JUMP:  // Add 2021
                     Debug.Log(" Jump !!!!! ");
                     sExecutor.AddAction(new JumpAction(sl.LineNumber));
+                    break;
+                case InteractionType.JUMPUP:
+                    Debug.Log("JumpUp");
+                    sExecutor.AddAction(new JumpUpAction(sl.LineNumber));
+                    break;
+                case InteractionType.JUMPDOWN:
+                    Debug.Log("JumpDown");
+                    sExecutor.AddAction(new JumpDownAction(sl.LineNumber));
                     break;
                 case InteractionType.KNEEL:  // Add 2021
                     Debug.Log(" Kneel !!!!! ");
@@ -5663,49 +6760,87 @@ namespace StoryGenerator.Utilities
                     break;
                 case InteractionType.LIFT:  // Add 2021
                     Debug.Log(" Lift !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
                     sExecutor.AddAction(new LiftAction(sl.LineNumber));
                     break;
                 case InteractionType.DROP:  // Add 2021
+                    Debug.Log(" Drop !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new DropAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.RINSE:  // Add 2021
+                    Debug.Log(" Rinse !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new RinseAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
-                case InteractionType.SQUART:  // Add 2021
+                case InteractionType.SQUAT:  // Add 2021
+                    Debug.Log(" Squat !!!!! ");
+                    sExecutor.AddAction(new SquatAction(sl.LineNumber));
                     break;
                 case InteractionType.SQUEEZE:  // Add 2021
+                    Debug.Log(" Squeeze !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new SqueezeAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
-                case InteractionType.STRECH:  // Add 2021
+                case InteractionType.STRETCH:  // Add 2021
+                    Debug.Log(" Stretch !!!!! ");
+                    sExecutor.AddAction(new StretchAction(sl.LineNumber));
                     break;
                 case InteractionType.SWEEP:  // Add 2021
                     Debug.Log(" Sweep !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
                     sExecutor.AddAction(new SweepAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
-                case InteractionType.PUTON:  // Add 2021
-                    break;
-                case InteractionType.PUTOFF:  // Add 2021
-                    break;
-                case InteractionType.STIR:
+                //case InteractionType.PUTON:  // Add 2021
+                    //break;
+                //case InteractionType.PUTOFF:  // Add 2021
+                    //break;
+                case InteractionType.STIR:// Add 2021
+                    Debug.Log(" Stir !!!!");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new StirAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.THROW:  // Add 2021
                     Debug.Log(" Throw !!!!! ");
-                    sExecutor.AddAction(new ThrowAction(sl.LineNumber));
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new ThrowAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.TYPE:  // Add 2021
                     Debug.Log(" Type !!!!! ");
                     sExecutor.AddAction(new TypeAction(sl.LineNumber));
                     break;
                 case InteractionType.UNFOLD:  // Add 2021
+                    Debug.Log(" Unfold !!!!");
+                    sExecutor.AddAction(new UnFoldAction(sl.LineNumber));
                     break;
                 case InteractionType.VACUUM:  // Add 2021
                     Debug.Log(" Vacuum !!!!! ");
                     sExecutor.AddAction(new VacuumAction(sl.LineNumber));
                     break;
                 case InteractionType.WAKEUP:  // Add 2021
+                    Debug.Log(" Stir !!!!");
+                    sExecutor.AddAction(new WakeUpAction(sl.LineNumber));
                     break;
                 case InteractionType.WIPE: // Add 2021
                     Debug.Log(" Wipe !!!!! ");
-                    sExecutor.AddAction(new WipeAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    if (string.IsNullOrEmpty(name1))
+                        throw new ScriptReaderException($"No second argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new WipeAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0,  name1, instance1, false));
                     break;
-                case InteractionType.WARP:  // Add 2021
+                case InteractionType.WRAP:  // Add 2021
+                    Debug.Log(" Wrap !!!!");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new WrapAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.WRITE:  // Add 2021
                     Debug.Log(" Write !!!!! ");
@@ -5714,6 +6849,18 @@ namespace StoryGenerator.Utilities
                 case InteractionType.FALL:  // Add 2021
                     Debug.Log(" Fall !!!!! ");
                     sExecutor.AddAction(new FallAction(sl.LineNumber));
+                    break;
+                case InteractionType.FALLSIT:  // Add 2021
+                    Debug.Log(" FallSit !!!!! ");
+                    sExecutor.AddAction(new FallSitAction(sl.LineNumber));
+                    break;
+                case InteractionType.FALLTABLE:  // Add 2021
+                    Debug.Log(" FallTable !!!!! ");
+                    sExecutor.AddAction(new FallTableAction(sl.LineNumber));
+                    break;
+                case InteractionType.FALLBACK:  // Add 2021
+                    Debug.Log(" FallBack !!!!! ");
+                    sExecutor.AddAction(new FallBackAction(sl.LineNumber));
                     break;
                 case InteractionType.STAND:  // Add 2021
                     //Debug.Log(" Stand !!!!! ");
@@ -5724,28 +6871,48 @@ namespace StoryGenerator.Utilities
                     sExecutor.AddAction(new StraddleAction(sl.LineNumber));
                     break;
                 case InteractionType.LEGOPP:  // Add 2021
+                    Debug.Log(" LegOpp !!!!");
+                    sExecutor.AddAction(new LegOppAction(sl.LineNumber));
                     break;
-                case InteractionType.STANDWITH:  // Add 2021
-                    break;
-                case InteractionType.WALKWITH:  // Add 2021
-                    break;
+                //case InteractionType.STANDWITH:  // Add 2021
+                  //  break;
+                //case InteractionType.WALKWITH:  // Add 2021
+                  //  break;
                 case InteractionType.SCRUB:  // Add 2021
                     Debug.Log(" Scrub !!!!! ");
-                    sExecutor.AddAction(new ScrubAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    if (string.IsNullOrEmpty(name1))
+                        throw new ScriptReaderException($"No second argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new ScrubAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0, name1, instance1 ));
                     break;
-                case InteractionType.SEW:  // Add 2021
-                    break;
+                //case InteractionType.SEW:  // Add 2021
+                  //  break;
                 case InteractionType.SHAKE:  // Add 2021
                     Debug.Log(" Shake !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
                     sExecutor.AddAction(new ShakeAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.SMELL:  // Add 2021
+                    Debug.Log(" Smell !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new SmellAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.SOAK:  // Add 2021
+                    Debug.Log(" Soak !!!!! ");
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new SoakAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
                     break;
                 case InteractionType.POUR:  // Add 2021
                     Debug.Log(" Pour !!!!! ");
-                    sExecutor.AddAction(new PourAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0));
+                    //if (string.IsNullOrEmpty(name0))
+                        //throw new ScriptReaderException($"No First argument for [{sl.Interaction}]");
+                    if (string.IsNullOrEmpty(name1))
+                        throw new ScriptReaderException($"No second argument for [{sl.Interaction}]");
+                    sExecutor.AddAction(new PourAction(sl.LineNumber, sExecutor.GetObjectSelector(name0, instance0), name0, instance0, name1, instance1 ));
                     break;
                 case InteractionType.SPECIAL:
                     // Ignore
