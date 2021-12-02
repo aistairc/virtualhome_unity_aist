@@ -726,11 +726,12 @@ namespace StoryGenerator
         }
         public IEnumerator Jump()
         {
-
+    
+            //Debug.Log("Jump in CharactorControl.cs");
             //Debug.Log("Jump in CharactorControl.cs");
             //m_animator.SetBool(ANIM_STR_JUMP, true);
             yield return SimpleAction("Jump");
-            Debug.Log("Jump in CharactorControl.cs");
+            
 
             //while ( canContinue(onLateUpdate != null) )
            // {
@@ -753,12 +754,11 @@ namespace StoryGenerator
         }
 
         public IEnumerator JumpUp()
-        {
-
-            //Debug.Log("Jump in CharactorControl.cs");
+        {   
+            //Debug.Log("JumpUp in CharactorControl.cs");
             //m_animator.SetBool(ANIM_STR_JUMP, true);
             yield return SimpleAction("JumpUp");
-            Debug.Log("JumpUp in CharactorControl.cs");
+            
 
             //while ( canContinue(onLateUpdate != null) )
            // {
@@ -782,11 +782,10 @@ namespace StoryGenerator
 
         public IEnumerator JumpDown()
         {
-
-            //Debug.Log("Jump in CharactorControl.cs");
+            //Debug.Log("JumpDown in CharactorControl.cs");
             //m_animator.SetBool(ANIM_STR_JUMP, true);
             yield return SimpleAction("JumpDown");
-            Debug.Log("JumpDown in CharactorControl.cs");
+            
 
             //while ( canContinue(onLateUpdate != null) )
            // {
@@ -1298,10 +1297,27 @@ namespace StoryGenerator
 
             //StartCoroutine(StopAction(anim_param));
 
-            while( canContinue( m_animator.GetBool(anim_param) ) )
+            
+            while( canContinue( m_animator.GetBool(anim_param)) )
             {
+                //Debug.Log("anim = " + anim_param + "   bool = " + canContinue( m_animator.GetBool(anim_param) ));
                 yield return null;
             }
+            
+
+            /*
+            while(true)
+            {
+                bool bAnimParam = m_animator.GetBool(anim_param);
+                bool bCanContinue = canContinue( bAnimParam);
+                Debug.Log("anim = " + anim_param + "  AnimParam = " + bAnimParam + "   CanContinue = " + bCanContinue);
+                if(bCanContinue){
+                    yield return null;
+                    break;
+                }
+
+            }
+            */
 
         }
 
@@ -1318,10 +1334,18 @@ namespace StoryGenerator
 
         bool canContinue(bool condition)
         {
+
+            //bool bCon = false;
             if (condition && ((rcdr == null) || ( (rcdr != null) && !rcdr.BreakExecution() ) ))
             {
                 return true;
+                //bCon = true;
             }
+
+            //Debug.Log("anim = " + anim_param + "   bool = " +  bCon);
+
+            //return bCon;
+
             return false;
         }
 

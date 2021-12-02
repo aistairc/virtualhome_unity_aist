@@ -477,6 +477,7 @@ namespace StoryGenerator.Utilities
 
     public class JumpUpAction : IAction
     {
+       
         public ScriptObjectName Name { get { return new ScriptObjectName("", 0); } }
         public int ScriptLine { get; private set; }
 
@@ -1561,13 +1562,13 @@ namespace StoryGenerator.Utilities
 
         public void AddAction(JumpUpAction a)
         {
-            Debug.Log(" I am at AddActtion(JumpAxtion a) in ScriptExcution.cs");
+            Debug.Log(" I am at AddActtion(JumpUpAxtion a) in ScriptExcution.cs");
             script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessJumpUp((JumpUpAction)ac, s)) });
         }
 
         public void AddAction(JumpDownAction a)
         {
-            Debug.Log(" I am at AddActtion(JumpAxtion a) in ScriptExcution.cs");
+            Debug.Log(" I am at AddActtion(JumpDownAxtion a) in ScriptExcution.cs");
             script.Add(new ScriptPair() { Action = a, ProcessMethod = ((ac, s) => this.ProcessJumpDown((JumpDownAction)ac, s)) });
         }
 
@@ -5201,7 +5202,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute JumpUp...");
             yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.JUMP, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.JUMPUP, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.JumpUp());
         }
 
@@ -5209,7 +5210,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute JumpDown...");
             yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.JUMP, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.JUMPDOWN, s.Action.ScriptLine);
             yield return characterControl.StartCoroutine(characterControl.JumpDown());
         }
 
@@ -6747,11 +6748,11 @@ namespace StoryGenerator.Utilities
                     sExecutor.AddAction(new JumpAction(sl.LineNumber));
                     break;
                 case InteractionType.JUMPUP:
-                    Debug.Log("JumpUp");
+                    Debug.Log("JumpUp !!!!!");
                     sExecutor.AddAction(new JumpUpAction(sl.LineNumber));
                     break;
                 case InteractionType.JUMPDOWN:
-                    Debug.Log("JumpDown");
+                    Debug.Log("JumpDown !!!!");
                     sExecutor.AddAction(new JumpDownAction(sl.LineNumber));
                     break;
                 case InteractionType.KNEEL:  // Add 2021

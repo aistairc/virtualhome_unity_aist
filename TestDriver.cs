@@ -680,7 +680,7 @@ namespace StoryGenerator
                         currentGraph = currentGraphCreator.CreateGraph(transform);
                     }
                     // Add
-                    string newfolder = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString();
+                    string newfolder = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString("00") + DateTime.Now.Day.ToString("00") + DateTime.Now.Hour.ToString("00") + DateTime.Now.Minute.ToString("00");
                     config.output_folder = "Output_" + newfolder + "/";
                     Debug.Log("Path = " + config.output_folder);
                     string outDir = Path.Combine(config.output_folder, config.file_name_prefix);
