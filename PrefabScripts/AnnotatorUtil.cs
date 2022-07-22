@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Video;
 using System.Collections;
@@ -52,12 +52,36 @@ namespace StoryGenerator.HomeAnnotation
     {
         static List<GameObject> m_GO_toDisable = new List<GameObject>();
 
-        public static void ProcessHome(Transform h, bool shouldRandomize)
+        static List<GameObject> Go_Obstacle = new List<GameObject>();
+
+        public static void GetObstacles(Transform h)
+        {
+        
+            var allChildren = h.GetComponentsInChildren<Transform>();
+            foreach(Transform t in allChildren)
+            {
+                if (t.name.Contains("Coffee_table"))
+                {
+                    GameObject go = t.Find("Coffee_T_Nav").gameObject;
+                    Go_Obstacle.Add(go);
+                    Debug.Log("Get Coffee for Obstacle = " + go.name);
+
+                }
+            }
+
+            Debug.Log(" Count Coffee table " + Go_Obstacle.Count +"  at Gatherring"); 
+        }
+
+        public static void ProcessHome(Transform h, bool shouldRandomize, NavMeshSurface navMeshSurface)
         {
 #if UNITY_EDITOR
-            UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
-            UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+            // disable 2 methods for checking NavMesh in Editor.... 2022
+            //UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
+            //UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
 #endif
+            // Add 2022 for Dynamic NavMesh
+            navMeshSurface.BuildNavMesh();
+
             if (shouldRandomize)
             {
                 GlobalRandomization(h);
@@ -68,15 +92,132 @@ namespace StoryGenerator.HomeAnnotation
             foreach (Transform child in allChildren)
             {
                 
-                ObjectAnnotator.AnnotateObj(child);
+                // Change for coffee table
+                if(child.name.Contains("Coffee_table"))
+                {
+                    //ObjectAnnotator.AnnotateObj(child);
+                    Debug.Log("child = " + child.name + " in ProcessHome");
+                    GameObject go = child.Find("Coffee_T_Nav").gameObject;
+                    Debug.Log("Coffee table Nav name = " + go.name);
+                    //go.SetActive(true);
+                }
+                else
+                {
+                    ObjectAnnotator.AnnotateObj(child);
+                    //Debug.Log("child = " + child.name + " in ProcessHome");
+                }
+               
+                
+                //ObjectAnnotator.AnnotateObj(child);
             }
 
             PostColorEncoding_DisableGameObjects();
         }
 
+        public static void ToggleCoffeeTableObstacle(Transform h)
+        {
+            var allChildren = h.GetComponentsInChildren<Transform>();
+            foreach(Transform t in allChildren)
+            {
+                if (t.name.Contains("Coffee_table"))
+                {
+                    GameObject go = t.Find("Coffee_T_Nav").gameObject;
+                    go.SetActive(!go.activeSelf);
+                    Debug.Log("Coffee table Nav name = " + go.name);
+
+                }
+            }
+        }
+
+        public static void SetCoffeeTableObstacle(bool b)
+        {
+             Debug.Log(" Count Coffee table " + Go_Obstacle.Count + "  at Set");
+
+            foreach(GameObject go in Go_Obstacle)
+            {
+                if(go != null){
+                    go.SetActive(b);
+                }
+                else
+                {
+                    Debug.Log(" go is null ");
+                }
+                
+            }
+            /*
+            var allChildren = h.GetComponentsInChildren<Transform>();
+            foreach(Transform t in allChildren)
+            {
+                if (t.name.Contains("Coffee_table"))
+                {
+                    GameObject go = t.Find("Coffee_T_Nav").gameObject;
+                    go.SetActive(b);
+                    Debug.Log("Coffee table Nav name = " + go.name);
+
+                }
+            }
+            */
+        }
+
+        public static void ProcessHomeNoCoffeetable(Transform h, bool shouldRandomize){
+
+            var allChildren = h.GetComponentsInChildren<Transform>();
+            foreach (Transform t in allChildren)
+            {
+                if (t.name.Contains("Coffee_table"))
+                {
+                    //ObjectAnnotator.AnnotateObj(child);
+                    //Debug.Log("child = " + t.name + " in ProcessHomeCoffeetable  name _h = " + h.name);
+                    GameObject go = t.Find("Coffee_T_Nav").gameObject;
+                    Debug.Log("Coffee table Nav name = " + go.name);
+                    go.SetActive(false);
+                }
+            }
+
+#if UNITY_EDITOR
+            // disable 2 methods for checking NavMesh in Editor.... 2022
+            //UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
+            //UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+#endif
+            
+            /*
+            if (shouldRandomize)
+            {
+                GlobalRandomization(h);
+            }
+            Reset();
+
+            //var allChildren = h.GetComponentsInChildren<Transform>();
+            foreach (Transform child in allChildren)
+            {
+                
+                // Change for coffee table
+                if(child.name.Contains("Coffee_table"))
+                {
+                    //ObjectAnnotator.AnnotateObj(child);
+                    Debug.Log("child = " + child.name + " in ProcessHomeCoffeetable  name _h = " + h.name);
+                    //GameObject go = child.Find("Coffee_table_Nav").gameObject;
+                   // Debug.Log(" Coffee table Nav name = " + go.name);
+                }
+                else
+                {
+                    ObjectAnnotator.AnnotateObj(child);
+                    //Debug.Log("child = " + child.name + " in ProcessHome");
+                }
+                
+            }
+
+            PostColorEncoding_DisableGameObjects();
+            */
+        }
+
         public static void Reset()
         {
             m_GO_toDisable.Clear();
+
+            // for NavMesh Add 2022
+            Go_Obstacle.Clear();
+
             ElectronicUtils.CacheSpritesAndVids();
         }
 

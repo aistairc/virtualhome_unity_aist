@@ -38,6 +38,9 @@ namespace StoryGenerator.Utilities
         DIRTY,
         PLUGGED_IN,
         PLUGGED_OUT,
+        SWITCHON,
+        SWITCHOFF,
+        GRABED
     }
 
     //public enum ObjectProperty
@@ -302,6 +305,12 @@ namespace StoryGenerator.Utilities
             return graph;
         }
 
+        // Add 2022
+        public HashSet<Tuple<int, int, ObjectRelation>> GetEgdeSet()
+        {
+            return edgeSet;
+        }
+
         public EnvironmentGraph SetGraph(EnvironmentGraph newGraph)
         {
             graph = newGraph.Copy();
@@ -327,7 +336,7 @@ namespace StoryGenerator.Utilities
         {
             // Updates current graph according to some actions or the full graph
             
-            Debug.Log("I am at UpdateGrah in EnvironmentGraph");
+            //Debug.Log("I am at UpdateGrah in EnvironmentGraph");
             if (changedObjs == null && last_actions == null)
             {
                 graph.edges.Clear();
@@ -352,6 +361,7 @@ namespace StoryGenerator.Utilities
                 foreach (EnvironmentObject c in chars)
                 {
                     changedObjs.Add(c.transform.gameObject);
+                    Debug.Log("c.transform.gameObject name = " + c.transform.gameObject);
                 }
 
                 List<EnvironmentObject> changedEnvObjs = (from go in changedObjs select objectNodeMap[go]).ToList();
@@ -362,16 +372,16 @@ namespace StoryGenerator.Utilities
                 }
 
                 UpdateGraphNodes(homeTransform, null, "Home", null);
-
+                Debug.Log("I am at UpdateGrah in EnvironmentGraph 2, changeedEnvObjs count = " + changedEnvObjs.Count);
                 UpdateGraphEdges(changedEnvObjs);
-                 Debug.Log("I am at UpdateGrah in EnvironmentGraph 2");
+                Debug.Log("I am at UpdateGrah in EnvironmentGraph 2");
             }
             else
             {
                 UpdateGraphNodes(last_actions);
                 UpdateGraphEdges(last_actions);
 
-                 Debug.Log("I am at UpdateGrah in EnvironmentGraph 3");
+                Debug.Log("I am at UpdateGrah in EnvironmentGraph 3");
             }
 
             graph.nodes.Sort((eo1, eo2) => eo1.id.CompareTo(eo2.id));
@@ -396,7 +406,7 @@ namespace StoryGenerator.Utilities
             GameObject gameObject = transform.gameObject;
             string prefabName = gameObject.name;
 
-            //Debug.Log("gameobject name = " + prefabName + "  category = " + category);
+            //Debug.Log("gameobject name = " + prefabName + "  category = " + category  + "  at UpdateGraphNodes in EnvironmentGraph");
 
             if (!gameObject.activeInHierarchy && !IsInGraph(gameObject))
             {
@@ -460,24 +470,30 @@ namespace StoryGenerator.Utilities
                 // due to an action but not when creating the graph
                 //Debug.Log("updating the graph block");
 
+                // for checking 2022
+                //Debug.Log("Update ....UpdateGraphNodes.....");
+
                 EnvironmentObject currentObject = objectNodeMap[gameObject];
                 // update the bounding boxes of objects that are already in the graph and are active
                 string className = dataProviders.ObjectSelectorProvider.GetClassName(prefabName);
-                //Debug.Log("class Name = " + className);
+                //Debug.Log("class Name = " + className + "   gamaobject Name  " + gameObject.name + "  at UpdateGraphNodes in EnvironmentGraph");
 
                 if (className != null)
                 {
                     className = ScriptUtils.TransformClassName(className);
-                    ObjectBounds bounds;
+                    //ObjectBounds bounds;
                     if (className == DoorClassName)
                     {
-                        bounds = DoorBounds(gameObject);
+                        currentObject.bounding_box = DoorBounds(gameObject);
+                        
                     }
                     else
                     {
-                        bounds = ObjectBounds.FromGameObject(gameObject);
+                        currentObject.bounding_box = ObjectBounds.FromGameObject(gameObject);
+                        // update obj_transform too, 2022
+                        currentObject.obj_transform = new ObjectTransform(gameObject.transform);
                     }
-                    currentObject.bounding_box = bounds;
+                    //currentObject.bounding_box = bounds;
                 }
 
                 // update the inside room edges if the object it self is not a room
@@ -496,7 +512,7 @@ namespace StoryGenerator.Utilities
                 }
                 else if (currentObject != null && roomObject != null)
                 {
-                    Debug.Log("Add Room Relation");
+                    //Debug.Log("Add Room Relation");
                     AddRoomRelation(currentObject, roomObject);
                 }
             }
@@ -539,7 +555,7 @@ namespace StoryGenerator.Utilities
                     }
                     else if (action_script.Action is SwitchOnAction)
                     {
-                        Debug.Log("Switch On !!! in EnvironmentGraph UpdateGraphNodes");
+                        Debug.Log("Switch On !!! in " + gameObject.name);
                         if (((SwitchOnAction)action_script.Action).Off)
                         {
                             objectNodeMap[gameObject].states.Remove(Utilities.ObjectState.ON);
@@ -802,6 +818,8 @@ namespace StoryGenerator.Utilities
 
                 if (action.script.Action is GrabAction)
                 {
+
+                    Debug.Log("UpdateGraphEdges with last action if Grab action" );
                     if (char_action.grabbed_left != null && char_action.grabbed_left.id == objectNodeMap[first_obj.GameObject].id)
                     {
                         RemoveGraphEdgesWithObject(char_action.grabbed_left);
@@ -934,19 +952,24 @@ namespace StoryGenerator.Utilities
 
             }
             // Add grabbed objects
+            Debug.Log(" characters in UpdateGrapEdges = " + characters.Count);
             foreach (KeyValuePair<EnvironmentObject, Character> o in characters)
             {
+                //Debug.Log("UpdateGraphEdges with Null if Grab action" );
                 if (o.Value.grabbed_left != null)
                 {
+                    //Debug.Log("UpdateGraphEdges with " + changedEnvObjs.Count<EnvironmentObject>() + " " );
                     EnvironmentObject grabbed_obj = o.Value.grabbed_left;
                     RemoveGraphEdgesWithObject(grabbed_obj);
                     AddGraphEdge(o.Value.character, grabbed_obj, ObjectRelation.HOLDS_LH);
+                    Debug.Log("Left hand Grabbed_obj = " + grabbed_obj.prefab_name);
                 }
                 if (o.Value.grabbed_right != null)
                 {
                     EnvironmentObject grabbed_obj = o.Value.grabbed_right;
                     RemoveGraphEdgesWithObject(grabbed_obj);
                     AddGraphEdge(o.Value.character, grabbed_obj, ObjectRelation.HOLDS_RH);
+                    Debug.Log("Right hand Grabbed_obj = " + grabbed_obj.prefab_name);
                 }
             }
 

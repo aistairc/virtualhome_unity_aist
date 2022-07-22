@@ -74,9 +74,19 @@ namespace StoryGenerator
             public int frameRate;
         }
 
+        class VisCheck{
+            public string visname;
+            public int visid;
+        }
+
+        // Add 2022 for Dynamic NavMesh
+        private NavMeshSurface _navMeshSurface;
+
         void Start()
         {
             recorder = GetComponent<Recorder>();
+
+            _navMeshSurface = GetComponent<NavMeshSurface>();
 
             // Initialize data from files to static variable to speed-up the execution process
             if (dataProviders == null) {
@@ -154,7 +164,10 @@ namespace StoryGenerator
 
         void ProcessHome(bool randomizeExecution)
         {
-            UtilsAnnotator.ProcessHome(transform, randomizeExecution);
+            UtilsAnnotator.ProcessHome(transform, randomizeExecution, _navMeshSurface);
+
+            // for NavMesh Add 2022
+            UtilsAnnotator.GetObstacles(transform);
 
             ColorEncoding.EncodeCurrentScene(transform);
             // Disable must come after color encoding. Otherwise, GetComponent<Renderer> failes to get
@@ -205,6 +218,8 @@ namespace StoryGenerator
             EnvironmentGraphCreator currentGraphCreator = null;
             EnvironmentGraph currentGraph = null;
             int expandSceneCount = 0;
+            // Add 2022
+            //HashSet<Tuple<int, int, ObjectRelation>> edgeSet; 
 
             InitRooms();
 
@@ -333,8 +348,11 @@ namespace StoryGenerator
 
                     }
                 } else if (networkRequest.action == "environment_graph") {
+
+                    Debug.Log(" I am at environment graph now...");
                     if (currentGraph == null)
                     {
+                        Debug.Log("currentGraph is null at environment_graph...");
                         currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                         var graph = currentGraphCreator.CreateGraph(transform);
                         response.success = true;
@@ -343,6 +361,7 @@ namespace StoryGenerator
                     }
                     else
                     {
+                        Debug.Log("currentGraph is not null at environment_graph...");
                         //s_GetGraphMarker.Begin();
                         using (s_GetGraphMarker.Auto())
                             currentGraph = currentGraphCreator.GetGraph();
@@ -358,6 +377,9 @@ namespace StoryGenerator
                 } else if (networkRequest.action == "expand_scene") {
                     cameraInitializer.initialized = false;
                     List<IEnumerator> animationEnumerators = new List<IEnumerator>();
+
+                    // for re bake navmesh Add 2022
+                    ExpanderConfig config4NavMesh = JsonConvert.DeserializeObject<ExpanderConfig>(networkRequest.stringParams[0]);
 
                     Dictionary<GameObject, int> char_ind = new Dictionary<GameObject, int>();
                     Dictionary<GameObject, List<Tuple<GameObject, ObjectRelation>>> grabbed_objs = new Dictionary<GameObject, List<Tuple<GameObject, ObjectRelation>>>();
@@ -402,8 +424,9 @@ namespace StoryGenerator
 
                         // This should go somewhere else...
                         List<GameObject> added_chars = new List<GameObject>();
-
+                        Debug.Log("name of transform = " + transform.name + " TestDrive_427");
                         graphExpander.ExpandScene(transform, graph, currentGraph, expandSceneCount, added_chars, grabbed_objs, exact_expand);
+                        Debug.Log(" num chat = " + added_chars.Count + " TestDrive_429");
                         int chid = 0;
                         foreach(GameObject added_char in added_chars)
                         {
@@ -430,6 +453,7 @@ namespace StoryGenerator
                             chid += 1;
 
                         }
+                        Debug.Log("you there ?  TestDrive_456");
                         SceneExpanderResult result = graphExpander.GetResult();
 
                         response.success = result.Success;
@@ -521,7 +545,10 @@ namespace StoryGenerator
                         c.GetComponent<Animator>().speed = 0;
                     }
 
-                    
+                    // for re bake navmesh after relocate furnitures....? Add 2022
+                    //UtilsAnnotator.ProcessHome(transform, config4NavMesh.randomize_execution, _navMeshSurface);
+
+                    Debug.Log("Re-bake NavMesh at Expand Graph !!! ");
 
                 } else if (networkRequest.action == "point_cloud") {
                     if (currentGraph == null) {
@@ -600,15 +627,17 @@ namespace StoryGenerator
                         {
                             currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                             currentGraph = currentGraphCreator.CreateGraph(transform);
+                            Debug.Log("Create currentGraph at add_character...");
                         }
                         else
                         {
                             currentGraph = currentGraphCreator.UpdateGraph(transform);
+                            Debug.Log("Update currentGraph at add_charcter...");
                         }
                         // add camera
                         // cameras.AddRange(CameraExpander.AddCharacterCameras(newchar.gameObject, transform, ""));
 
-
+                        recorder.SetCharcters(characters);
                         response.success = true;
                     }
                     else
@@ -656,6 +685,9 @@ namespace StoryGenerator
                 // TODO: remove character as well
 
                 else if (networkRequest.action == "render_script") {
+                    
+                    VisCheck vco = new VisCheck();
+
                     if (numCharacters == 0)
                     {
                         networkRequest = null;
@@ -667,6 +699,7 @@ namespace StoryGenerator
                         continue;
                     }
 
+                    Debug.Log("ExecutionConfig = " + networkRequest.stringParams[0]);
                     ExecutionConfig config = JsonConvert.DeserializeObject<ExecutionConfig>(networkRequest.stringParams[0]);
 
 
@@ -678,12 +711,18 @@ namespace StoryGenerator
                     {
                         currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                         currentGraph = currentGraphCreator.CreateGraph(transform);
+                        Debug.Log("Yes, create graph...");
+                       
+                        
                     }
+                   
+
                     // Add
-                    string newfolder = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString("00") + DateTime.Now.Day.ToString("00") + DateTime.Now.Hour.ToString("00") + DateTime.Now.Minute.ToString("00");
-                    config.output_folder = "Output_" + newfolder + "/";
-                    Debug.Log("Path = " + config.output_folder);
+                    //string newfolder = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString("00") + DateTime.Now.Day.ToString("00") + DateTime.Now.Hour.ToString("00") + DateTime.Now.Minute.ToString("00");
+                    //config.output_folder = "Output_" + newfolder + "/";
+                    //Debug.Log("Path = " + config.output_folder);
                     string outDir = Path.Combine(config.output_folder, config.file_name_prefix);
+                    
                     if (!config.skip_execution) {
                         Directory.CreateDirectory(outDir);
                     }
@@ -746,7 +785,79 @@ namespace StoryGenerator
                             Debug.Log("ScriptList " + i + " = " + scriptLines[i]);
                         }
 
-                        scriptLines.RemoveAt(0);
+                        //
+                        // Set up camera for checking objects, character, and outputing graph each frame...
+                        // Add 2022 for AIST
+                        // 
+                        //
+                        string line0 = scriptLines[0];
+                        string[] arguments = line0.Split(',');
+                        bool isVisObjectCheck = false;
+                        bool isOutGraph = false;
+                        bool isVisCharacterCeck = false;
+                        foreach(string str in arguments)
+                        {
+                            
+                            if(str.Contains("vis_check_object"))
+                            {
+                                
+                                if(str.Contains("true"))
+                                {
+                                    isVisObjectCheck = true;
+                                    Debug.Log(" i found vis object mark true !!!");
+                                }
+                                
+                            }
+
+                            if(str.Contains("out_graph"))
+                            {
+                                if(str.Contains("true"))
+                                {
+                                    isOutGraph = true;
+                                    Debug.Log(" i found out graph mark true !!!");
+                                }
+                            }
+
+                            if(str.Contains("vis_check_character"))
+                            {
+                                if(str.Contains("true")){
+                                    isVisCharacterCeck = true;
+                                    Debug.Log(" i found vis char mark ture !!!");
+                                }
+                            }
+
+                        }
+
+                        foreach(Recorder re in recorders)
+                        {
+                            re._calcRect = isVisObjectCheck;
+                            re._calcRectChar = isVisCharacterCeck;
+                        }
+
+                        if (currentGraph != null)
+                        {
+                            Debug.Log(" I have EnvironmentGraph !!!!");
+                            // checking objects be visible
+                             for (int i = 0; i < numCharacters; i++)
+                            {
+                                sExecutors[i].SetEnvironmentGraph(currentGraph); 
+                            } 
+
+                            // outputing graph
+                            foreach(Recorder re in recorders)
+                            {
+                                re._outGraph = isOutGraph;
+                                //re.SetEnvironmentGraph(currentGraph);
+                                re.SetTransfrom(transform); // first  !!!
+                                re.SetEnvironmentGraphCreator(currentGraphCreator); // second !!!
+                                
+                            }   
+                        }
+                         
+                        // Check amounts of recorders
+                        Debug.Log("Num of Recorder = " + recorders.Count);
+
+                        scriptLines.RemoveAt(0); // remove params of render_script command....
                         // not ok, has video
                         for (int i = 0; i < numCharacters; i++)
                         {
@@ -754,7 +865,11 @@ namespace StoryGenerator
                             sExecutors[i].smooth_walk = !config.skip_animation;
                         }
 
+                        ScriptReader.SetTransfrom(transform);
+                        ScriptReader.SetRandomizeExecutio(false);
                         ScriptReader.ParseScript(sExecutors, scriptLines, dataProviders.ActionEquivalenceProvider);
+
+                    
                         parseSuccess = true;
                     }
                     catch (Exception e)
@@ -773,9 +888,15 @@ namespace StoryGenerator
                         List<Tuple<int, Tuple<String, String>>> error_messages = new List<Tuple<int, Tuple<String, String>>>();
                         if (!config.find_solution)
                             error_messages = ScriptChecker.SolveConflicts(sExecutors);
+
+                        //
+                        //
+                        //  I think execute acttion here... 2th/March/2022
+                        //
+                        //
                         for (int i = 0; i < numCharacters; i++)
                         {
-                            StartCoroutine(sExecutors[i].ProcessAndExecute(config.recording, this));
+                            StartCoroutine(sExecutors[i].ProcessAndExecute(config.recording, this)); // <---------------
                         }
 
                         while (finishedChars != numCharacters)
@@ -891,6 +1012,7 @@ namespace StoryGenerator
                         bool single_action = true;
                         for (int char_index = 0; char_index < numCharacters; char_index++)
                         {
+                            Debug.Log("if response.success = true, I am doing ActionObjectData....");
                             if (success_per_agent[char_index])
                             {
                                 State currentState = this.CurrentStateList[char_index];
@@ -947,7 +1069,10 @@ namespace StoryGenerator
 
                                         //    //int instance_id = entry.Value.GameObject.GetInstanceID();
                                         //}
+
                                         changedObjs.Add(entry.Value.GameObject);
+                                        Debug.Log("GameObject at entry.Value.GameObject = " + entry.Value.GameObject.name + "  count of changedObjs = " + changedObjs.Count);
+                                        //Debug.Log("  changedObjectsName 0 = " + changedObjs.ElementAt<GameObject>(0).name + "  changedObjectsName 1 = " + changedObjs.ElementAt<GameObject>(1).name);
                                     }
 
                                     if (entry.Value.OpenStatus != OpenStatus.UNKNOWN)
@@ -993,10 +1118,12 @@ namespace StoryGenerator
                                 }
                                 else
                                 {
+                                    Debug.Log("  count of changedObjs = " + changedObjs.Count);
                                     currentGraph = currentGraphCreator.UpdateGraph(transform, changedObjs);
-                                    Debug.Log("single_action may be false = " + single_action + 
+                                    Debug.Log("  count of changedObjs = " + changedObjs.Count);
+                                    /*Debug.Log("single_action may be false = " + single_action + 
                                               "  changedObjectsName 0 = " + changedObjs.ElementAt<GameObject>(0).name + 
-                                              "  changedObjectsName 1 = " + changedObjs.ElementAt<GameObject>(1).name);
+                                              "  changedObjectsName 1 = " + changedObjs.ElementAt<GameObject>(1).name);*/
                                 }
                                     
                             }
@@ -1386,7 +1513,7 @@ namespace StoryGenerator
 
 
                 // Initialize the scriptExecutor for the character
-                ScriptExecutor sExecutor = new ScriptExecutor(objectList, dataProviders.RoomSelector, objectSel, recorders[i], i, interaction_cache, !config.skip_animation);
+                ScriptExecutor sExecutor = new ScriptExecutor(objectList, dataProviders.RoomSelector, objectSel, recorders[i], i, interaction_cache, this.transform, !config.skip_animation);
                 sExecutor.RandomizeExecution = config.randomize_execution;
                 sExecutor.ProcessingTimeLimit = config.processing_time_limit;
                 sExecutor.SkipExecution = config.skip_execution;

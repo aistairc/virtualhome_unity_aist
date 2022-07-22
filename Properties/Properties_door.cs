@@ -331,13 +331,18 @@ namespace StoryGenerator.DoorProperties
 
 		void AddRigidBody()
 		{
-			Rigidbody rb = gameObject.AddComponent<Rigidbody> ();
-			rb.useGravity = false;
-			// This must be set to true to prevent interference with NavMeshAgent behaviour.
-			// It will be enabled back before actual door interaction.
-			rb.isKinematic = true;
-			rb.drag = 1.5f;
-			rb.angularDrag = 1.0f;
+			Rigidbody r = gameObject.GetComponent<Rigidbody>();
+			if(r == null)
+			{
+				Rigidbody rb = gameObject.AddComponent<Rigidbody> ();
+				rb.useGravity = false;
+				// This must be set to true to prevent interference with NavMeshAgent behaviour.
+				// It will be enabled back before actual door interaction.
+				rb.isKinematic = true;
+				rb.drag = 1.5f;
+				rb.angularDrag = 1.0f;
+			}
+			
 		}
 
 		void AddHingeJoint()

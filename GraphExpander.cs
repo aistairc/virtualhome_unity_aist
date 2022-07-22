@@ -368,6 +368,7 @@ namespace StoryGenerator.Utilities
 
                                 object_inst = true;
                                 obj.transform = newGo.transform;
+                                Debug.Log("Name of newGo = " + newGo.name + " GraphExpander_371");
                                 ObjectAnnotator.AnnotateObj(newGo.transform);
                                 ColorEncoding.EncodeGameObject(newGo);
                             }

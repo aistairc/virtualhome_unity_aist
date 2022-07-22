@@ -247,12 +247,20 @@ namespace StoryGenerator
         Vector3? m_pos_lookAt;
         bool m_anm_isCharSittingDown;
         bool m_anm_isLastDoorOpenPush;
+        bool m_anm_isCharJumpingUp;
         IkTargets m_ikTargets;
-        
+        static float STEP_MOVE_FORWARD = 0.1f;
         delegate void LateUpdateDelegate();
         LateUpdateDelegate onLateUpdate;
 
+        // Add 2022
+        //ViewWhiskers _viewWhiskers;
+
+        //public Camera _cam;
+
         const float TIMEDAMP_MOVE = 0.1f;
+        //const float TIEMDAMP_HUMANOIDIDLE = 1.0f;
+        //const float TIMEDAMP_KNEEL = 1.5f;  // Add 2021 to controle Blend Tree 
         const float TIMEDAMP_STOP_RUN = 0.23f; // More time damping for stopping so that stopping looks more natural and smooth
         const float SPEED_WALK = 0.5f;
         const float SPEED_RUN = 1.0f;
@@ -270,7 +278,7 @@ namespace StoryGenerator
         const string ANIM_STR_FORWARD = "Forward";
         const string ANIM_STR_TURN = "Turn";
         const string ANIM_STR_SIT = "Sit";
-        const string ANIM_STR_JUMP = "Jump";    // Add 2021
+        //const string ANIM_STR_JUMP = "Jump";    // Add 2021
         const string ANIM_STR_SIT_WEIGHT = "SitWeight";
         const string ANIM_STR_HAND_WEIGHT = "HandWeight";
 
@@ -294,14 +302,63 @@ namespace StoryGenerator
                                     RigidbodyConstraints.FreezeRotationY |
                                     RigidbodyConstraints.FreezeRotationZ;
             m_anm_isCharSittingDown = false;
+            m_anm_isCharJumpingUp = false;
             m_ikTargets = new IkTargets(gameObject, Randomize);
+
+            /*_cam = transform.Find("Camera").gameObject.GetComponent<Camera>();
+            if(_cam != null)
+            {
+                Debug.Log("I got camera !!!");
+            }
+            else
+            {
+                Debug.Log("I did not get camera !!!");
+            }
+            */
+
+            /*
+            _viewWhiskers = transform.Find("whiskersCube").gameObject.GetComponent<ViewWhiskers>();
+            if(_viewWhiskers != null)
+            {
+                Debug.Log("I got viewWhiskers !!!");
+            }
+            else
+            {
+                Debug.Log("I did not get viewWhiskers !!!");
+            }
+            */
+            
         }
+
+
+        // Add 2022
+        /*
+        public string GetNameCollision()
+        {
+            return _viewWhiskers.NameCollision;
+        }
+
+        public string GetNameClsParent()
+        {
+            return _viewWhiskers.NameClsParent;
+        }
+
+        public string GetNameClsGrdParent()
+        {
+            return _viewWhiskers.NameClsGrdParent;
+        }
+        */
 
         public void SetSpeed(float speed_value=1.0f)
         {
             m_is.speed = speed_value;
             m_animator.speed = speed_value;
 
+        }
+
+        public Transform GetTransform()
+        {
+            return this.transform;
         }
 
         void LateUpdate()
@@ -352,6 +409,7 @@ namespace StoryGenerator
             yield return Turn(objToInteract.transform.position);
             
             m_animator.SetBool(ANIM_STR_SIT, true);
+            //yield return SimpleAction(ANIM_STR_SIT);  not worked...
             m_ikTargets.ActionSit(targetObject.transform);
             onLateUpdate += AdjustSittingAnim;
             // NavMeshAgent has to be disabled during sitting because it will interfere
@@ -368,9 +426,16 @@ namespace StoryGenerator
                 string objType = Helper.GetClassGroups()[go.name].className;
                 stateChar.UpdateSittingOn(objType);
             }
+
+            //Debug.Log("Bool Sitting = " + m_anm_isCharSittingDown);
+
+            //m_animator.SetFloat(ANIM_STR_FORWARD, -5.5f);
+			//m_animator.SetFloat(ANIM_STR_TURN, 1.0f);
+
+            //Debug.Log("At Sit, Forward = " + m_animator.GetFloat(ANIM_STR_FORWARD) + "  Turn = " + m_animator.GetFloat(ANIM_STR_TURN));
         }
 
-        public IEnumerator Stand()
+        public IEnumerator StandUp()
         {
             m_animator.SetBool(ANIM_STR_SIT, false);
             while ( canContinue(onLateUpdate != null) )
@@ -490,7 +555,7 @@ namespace StoryGenerator
             }
 
             m_nma.isStopped = false;
-            m_nma.SetDestination(pos);
+            m_nma.SetDestination(pos);// <-------------------------- set destnation here !!!
 
             while ( canContinue(m_nma.pathPending) )
             {
@@ -548,6 +613,7 @@ namespace StoryGenerator
 
                 // Update the animator parameters
                 m_animator.SetFloat (ANIM_STR_FORWARD, forwardAmount, TIMEDAMP_MOVE, Time.deltaTime);
+                //Debug.Log("Start turn in charcter control at SetAnimationTurnAmount");
                 SetAnimatorTurnAmount(distanceDiff, turnAmount);
                 yield return null;
             }            
@@ -563,6 +629,7 @@ namespace StoryGenerator
                     }
 
                     m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, timeDampValue, Time.deltaTime);
+                    //Debug.Log("Start turn in charcter control at lookat == null");
                     m_animator.SetFloat(ANIM_STR_TURN, 0.0f, timeDampValue, Time.deltaTime);
                     yield return null;
                 }
@@ -576,6 +643,7 @@ namespace StoryGenerator
                   turnAmount = CalculateTurnAmount(false) ) 
                 {
                     m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
+                    //Debug.Log("Start turn in character control at lookat != null");
                     m_animator.SetFloat(ANIM_STR_TURN, turnAmount, TIMEDAMP_MOVE, Time.deltaTime);
                     yield return null;
                 }
@@ -583,8 +651,11 @@ namespace StoryGenerator
                 m_pos_lookAt = null;
             }
 
-            m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f);
-            m_animator.SetFloat(ANIM_STR_TURN, 0.0f);
+            // Change for keeping each posture...
+            //
+            //m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f);
+            //
+            //m_animator.SetFloat(ANIM_STR_TURN, 0.0f);
             m_nma.isStopped = true;
         }
 
@@ -656,6 +727,23 @@ namespace StoryGenerator
                 m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
                 m_animator.SetFloat(ANIM_STR_TURN, turnAmount, TIMEDAMP_MOVE, Time.deltaTime);
                 yield return null;
+            }
+        }
+
+        public IEnumerator Move(float posToGood)
+        {
+            //Vector3 m_pos_current = this.gameObject.transform.position;
+            float zValue = posToGood;
+            while(zValue > 0.0f)
+            {
+                Vector3 m_pos_current = this.gameObject.transform.position;
+                m_pos_current -=  this.gameObject.transform.forward * STEP_MOVE_FORWARD;
+                m_pos_current -=  this.gameObject.transform.up * STEP_MOVE_FORWARD;
+                this.gameObject.transform.position = m_pos_current;
+                zValue -= STEP_MOVE_FORWARD;
+                Debug.Log("Moving..." + m_pos_current);
+                yield return null;
+
             }
         }
 
@@ -757,27 +845,43 @@ namespace StoryGenerator
         {   
             //Debug.Log("JumpUp in CharactorControl.cs");
             //m_animator.SetBool(ANIM_STR_JUMP, true);
-            yield return SimpleAction("JumpUp");
+
             
 
-            //while ( canContinue(onLateUpdate != null) )
-           // {
-            //  yield return null;
-            //}
+            yield return SimpleAction("JumpUp");
 
-            /* Do not need to change charactor state... Add 2021
-            // Reset values
-            m_ikTargets.RevertActionSit();
-            m_nma.enabled = true;
-            // Comment this for now. It might be needed laster on
-            // when we have multiple characters.
-            // m_su.isSittable = true;
+            //yield return Move(1.0f);
+            
+            //Debug.Log("Jump  Forward = " + m_animator.GetFloat("Forward") + "   Turn = " + m_animator.GetFloat("Turn"));
+            
+            //if (targetObject == null) {
+               // Debug.LogError("Null objectToInteract or targetObject in Sit" + go.name);
+               // yield break;
+           // }
 
+            //yield return Turn(objToInteract.transform.position);
+            
+            //m_animator.SetBool(ANIM_STR_SIT, true);
+            //m_ikTargets.ActionSit(targetObject.transform);
+            //onLateUpdate += AdjustSittingAnim;
+            // NavMeshAgent has to be disabled during sitting because it will interfere
+            // with sitting position of character.
+            m_nma.enabled = false;
+
+            while ( canContinue(m_anm_isCharJumpingUp) )
+            {
+                yield return null;
+            }
+
+            /*
             if (stateChar != null)
             {
-                stateChar.UpdateSittingOn("");
+                string objType = Helper.GetClassGroups()[go.name].className;
+                stateChar.UpdateSittingOn(objType);
             }
             */
+
+            //Debug.Log("Bool Sitting = " + m_anm_isCharJumpingUp);
         }
 
         public IEnumerator JumpDown()
@@ -809,12 +913,32 @@ namespace StoryGenerator
 
         public IEnumerator Kneel()
         {
+            
             yield return SimpleAction("Kneel");
+           
+            /*
+            while(m_animator.GetFloat(ANIM_STR_FORWARD) > -5.9f)
+            {
+                m_animator.SetFloat(ANIM_STR_FORWARD, -6.0f, 1.0f, Time.deltaTime);
+                m_animator.SetFloat(ANIM_STR_TURN, 0.0f, 1.0f, Time.deltaTime);
+
+
+                yield return null;
+
+            }
+            */
+
+            
         }
 
-        public IEnumerator Lift()
+        public IEnumerator LiftLeft()
         {
-            yield return SimpleAction("Lift");
+            yield return SimpleAction("LiftLift");
+        }
+
+        public IEnumerator LiftRight()
+        {
+            yield return SimpleAction("LiftRight");
         }
 
         public IEnumerator DropLeft()
@@ -840,6 +964,7 @@ namespace StoryGenerator
         public IEnumerator Squat()
         {
             yield return SimpleAction("Squat");
+            //Debug.Log("Squat  Forward = " + m_animator.GetFloat("Forward") + "   Turn = " + m_animator.GetFloat("Turn"));
         }
 
         public IEnumerator SqueezeLeft()
@@ -889,9 +1014,14 @@ namespace StoryGenerator
             yield return SimpleAction("StirRight");
         }
 
-        public IEnumerator Throw()
+        public IEnumerator ThrowLeft()
         {
-            yield return SimpleAction("Throw");
+            yield return SimpleAction("ThrowLeft");
+        }
+
+        public IEnumerator ThrowRight()
+        {
+            yield return SimpleAction("ThrowRight");
         }
 
         public IEnumerator Type()
@@ -941,17 +1071,42 @@ namespace StoryGenerator
 
         public IEnumerator Fall()
         {
+            /*
+            while(m_animator.GetFloat(ANIM_STR_FORWARD) > -3.48f)
+            {
+                m_animator.SetFloat(ANIM_STR_FORWARD, -3.5f, 0.5f, Time.deltaTime);
+                m_animator.SetFloat(ANIM_STR_TURN, 5.0f, 0.5f, Time.deltaTime);
+
+                yield return null;
+
+            }
+            */
+
             yield return SimpleAction("Fall");
         }
 
         public IEnumerator FallSit()
         {
+            //m_animator.SetFloat(ANIM_STR_FORWARD, -5.5f);
+            //m_animator.SetFloat(ANIM_STR_TURN, 1.0f);
+            
             yield return SimpleAction("FallSit");
+            //Debug.Log("FallSit  Forward = " + m_animator.GetFloat("Forward") + "   Turn = " + m_animator.GetFloat("Turn"));
         }
 
-        public IEnumerator FallTable()
+        public IEnumerator FallFrom()
         {
-            yield return SimpleAction("FallTable");
+            yield return SimpleAction("FallFrom");
+        }
+
+        public IEnumerator FallTable1()
+        {
+            yield return SimpleAction("FallTable1");
+        }
+
+        public IEnumerator FallTable2()
+        {
+            yield return SimpleAction("FallTable2");
         }
 
         public IEnumerator FallBack()
@@ -968,6 +1123,75 @@ namespace StoryGenerator
         {
             yield return SimpleAction("LegOpp");
         }
+
+        public IEnumerator Stand()
+        {
+
+            float v = m_animator.GetFloat("Forward");//-6f;
+            Debug.Log("Forward = " + v);
+            for(int i = 0; i < 50; i++)
+            {
+                yield return new WaitForSeconds(0.05f);
+                v += 0.2f;
+                if(v > 0)
+                {
+                    m_animator.SetFloat("Forward", 0.0f);
+                    break;
+                }
+                else
+                {
+                    m_animator.SetFloat("Forward", v);
+                }
+            }
+
+            yield return SimpleAction("Stand");
+            m_animator.SetFloat("Turn", 0.0f);
+			m_animator.SetFloat("Forward", 0.0f);
+
+
+            if(m_anm_isCharSittingDown == true)
+            {
+                m_anm_isCharSittingDown = false;
+            }
+
+            Debug.Log("Bool Sitting = " + m_anm_isCharSittingDown);
+        }
+
+        /*
+        public IEnumerator Stand()
+        {
+            m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
+            m_animator.SetFloat(ANIM_STR_TURN, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
+        
+            //yield return null;
+
+            //m_animator.SetBool(ANIM_STR_SIT, false);
+            while ( canContinue(onLateUpdate != null) )
+            {
+                yield return null;
+            }
+
+            if(m_anm_isCharSittingDown == true)
+            {
+                m_anm_isCharSittingDown = false;
+            }
+            
+            Debug.Log("Bool Sitting = " + m_anm_isCharSittingDown);
+
+            //// Reset values
+            //m_ikTargets.RevertActionSit();
+            m_nma.enabled = true;
+            //// Comment this for now. It might be needed laster on
+            //// when we have multiple characters.
+            //m_su.isSittable = true;
+
+            //if (stateChar != null)
+            //{
+                //stateChar.UpdateSittingOn("");
+            //}
+        }
+        */
+
         /*
         public IEnumerator StandWith()
         {
@@ -1045,6 +1269,36 @@ namespace StoryGenerator
         public IEnumerator PourRight()
         {
             yield return SimpleAction("PourRight");
+        }
+
+        public IEnumerator Climb()
+        {
+            yield return SimpleAction("Climb");
+        }
+
+        public IEnumerator GoDown()
+        {
+            yield return SimpleAction("GoDown");
+        }
+
+        public IEnumerator LayDown()
+        {
+            yield return SimpleAction("LayDown");
+        }
+
+        public IEnumerator Sleep()
+        {
+            yield return SimpleAction("Sleep");
+        }
+
+        public IEnumerator PickUpLeft()
+        {
+            yield return SimpleAction("PickUpLeft");
+        }
+
+        public IEnumerator PickUpRight()
+        {
+            yield return SimpleAction("PickUpRight");
         }
         #endregion
 
@@ -1282,8 +1536,8 @@ namespace StoryGenerator
                 m_anm_isCharSittingDown = true;
             }
             m_ikTargets.SetWeightsSit(sitWeight);
-            m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
-            m_animator.SetFloat(ANIM_STR_TURN, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
+            //m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
+            //m_animator.SetFloat(ANIM_STR_TURN, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
         }
 
         // Used for simple animation where setting bool value on animator and
@@ -1295,17 +1549,19 @@ namespace StoryGenerator
             // (it's controlled by DisableBoolean.cs), we can just poll
             // this animation parameter.
 
-            //StartCoroutine(StopAction(anim_param));
-
+            
+            //Debug.Log("Now Switch On -> " + anim_param);
+            //Debug.Log("Now Switch On -> " + anim_param +  "  Forward = " + m_animator.GetFloat("Forward") + "   Turn = " + m_animator.GetFloat("Turn"));
             
             while( canContinue( m_animator.GetBool(anim_param)) )
             {
-                //Debug.Log("anim = " + anim_param + "   bool = " + canContinue( m_animator.GetBool(anim_param) ));
+                // Debug.Log("anim = " + anim_param);
                 yield return null;
             }
-            
 
-            /*
+            
+            // for checking boolean value,  not in original code...
+            /* 
             while(true)
             {
                 bool bAnimParam = m_animator.GetBool(anim_param);
@@ -1321,16 +1577,7 @@ namespace StoryGenerator
 
         }
 
-        // I found DisableBoolean.cs !!! no need this coroutine !!!
-        /*
-        IEnumerator StopAction(string anim_param)
-        {
-            // Do stop action
-            Debug.Log("Do stop simple action");
-            yield return new WaitForSeconds(2.0f);
-            m_animator.SetBool(anim_param, false);
-        }
-        */
+  
 
         bool canContinue(bool condition)
         {

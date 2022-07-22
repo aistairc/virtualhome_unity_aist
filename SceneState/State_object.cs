@@ -345,6 +345,7 @@ namespace StoryGenerator.SceneState
 				
 				case StateType.Power:
 					objState.power = ! objState.power;
+					Debug.Log(" Power On !!!! or Off...");
 					break;
 				default:
 					Debug.LogError("Unknown StateType on " + name);

@@ -101,6 +101,8 @@ namespace StoryGenerator.CharInteraction
             Open,
         };
 
+        private StoryGenerator.Recording.Recorder _Recorder;
+
         #region ClassDefinitions
         [System.Serializable]
         // Fields are public so that we can see what their values are on the inspector.
@@ -1144,6 +1146,11 @@ namespace StoryGenerator.CharInteraction
             // Start call comes after Awake and by this time, call necessary GameObjects are created so
             // we can skip Awake function for clones.
             m_skipAwake = true;
+
+            //Debug.Log("Start Handinterction.cs now !!!");
+            _Recorder = FindObjectOfType<StoryGenerator.Recording.Recorder>();
+            //_Recorder.PleaseCallMe("Start Handinterction.cs now !!!");
+
         }
 
         void ToggleCollider()
@@ -1159,6 +1166,9 @@ namespace StoryGenerator.CharInteraction
         // this method of the original (not its own OnPickup).
         void OnPickup()
         {
+            // Add 2022 tell a object picked to recorder
+            //_Recorder.ActivateObjectNow(this.gameObject.name + " from OnPick");
+
             ToggleCollider();
             Transform charTsfm = m_tsfm_char;
             string objType = "";
@@ -1186,26 +1196,47 @@ namespace StoryGenerator.CharInteraction
                     objType = so.GetObjType();
                 }
             }
-
+            
+            // Add 2022
+            String whichHand = "No I do not have any object in my both hand";
             State_char sc = m_tsfm_char.GetComponent<State_char> ();
             if (sc != null)
             {
                 if (grabHand == FullBodyBipedEffector.LeftHand)
                 {
                     sc.UpdateHandLeft(objType);
+                    whichHand = "LeftHand";
                 }
                 else if (grabHand == FullBodyBipedEffector.RightHand)
                 {
                     sc.UpdateHandRight(objType);
+                    whichHand = "RightHand";
                 }
             }
             isPickedUp = ! isPickedUp;
+
+            if (grabHand == FullBodyBipedEffector.LeftHand)
+            {
+                whichHand = "LeftHand";
+            }
+            else if (grabHand == FullBodyBipedEffector.RightHand)
+            {
+                whichHand = "RightHand";
+            }
+
+            // Add 2022 tell a object picked to recorder
+            // should set at the end of this method...
+            // for updateing left or right hand...
+            _Recorder.ActivateObjectNow(whichHand);
         }
 
         // This method is called by InteractionObject which handles interaction (Resources/Chars/HandPoses/Male1/)
         void ActivateObject()
         {
             switches[m_activatedSwitchIdx].Activate();
+            //Debug.Log("Oh, you call me....");
+            _Recorder.ActivateObjectNow(this.gameObject.name);
+            
         }
 
         internal int SwitchIndex(ActivationAction action)

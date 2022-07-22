@@ -475,11 +475,14 @@ namespace StoryGenerator.SpecialBehavior
         const string CEILING_LAMP = "Ceiling_lamp";
         public void Process(Transform tsfm)
         {
+            Debug.Log("Name tsfm = " + tsfm.name + "  Name tsfm.parent.parent = " + tsfm.parent.parent + "  SpecailBehavior_478");
             State_object so = tsfm.gameObject.AddComponent<State_object>();
             so.Initialize();
 
             Transform lamps = tsfm.parent.parent.Find(UtilsAnnotator.LAMPS.GROUP_NAME);
-
+            // add 2022 July
+            if(lamps == null) lamps = tsfm.parent.Find(UtilsAnnotator.LAMPS.GROUP_NAME);
+            Debug.Log(" lamps name = " + lamps.name + "  SpecialBehavior_483");
             Debug.Assert(lamps != null, "Cannot find the lamp objects");
 
             List<GameObject> list_lightSources = new List<GameObject>();

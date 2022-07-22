@@ -43,7 +43,7 @@ namespace StoryGenerator.Utilities
         JUMPDOWN, // Add 2021
         KNEEL,  // Add 2021
         LIFT,   // Add 2021
-        DROP,   // Add 2021
+        DROP,   // Add 2021ALLTABLE1
         RINSE,  // Add 2021
         SQUAT, // Add 2021
         SQUEEZE,// Add 2021
@@ -62,9 +62,11 @@ namespace StoryGenerator.Utilities
         WRITE,  // AdD 2021
         FALL,   // Add 2021
         FALLSIT,   // Add 2021
-        FALLTABLE,   // Add 2021
+        FALLFROM,   // Add 2021
+        FALLTABLE1,  // Add 2021
+        FALLTABLE2,  // Add 2021
         FALLBACK,   // Add 2021
-        STAND,  // Add 2021
+        STAND,  // Add 2021 Go Back Humanoididle in Blend Tree
         STRADDLE,// Add 2021
         LEGOPP, // Add 2021
         STANDWITH,// Add 2021
@@ -73,7 +75,12 @@ namespace StoryGenerator.Utilities
         SHAKE,  // Add 2021
         SMELL,  // Add 2021
         SOAK,   // Add 2021
-        POUR   // Add 2021
+        POUR,   // Add 2021
+        GODOWN, // Add 2021
+        CLIMB, // Add 2021
+        SLEEP,  // Add 2021
+        LAYDOWN,     // Add 2021
+        PICKUP  // Add 2021
     }
 
     public static class InteractionTypeGroup

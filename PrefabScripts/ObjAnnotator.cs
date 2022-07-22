@@ -668,6 +668,7 @@ namespace StoryGenerator.HomeAnnotation
             if (Helper.GetAnnotations().TryGetValue(tsfm.name, out attn))
             {
                 attn.Annotate(tsfm);
+                //Debug.Log("tsfm.nama = " + tsfm.name + " in ObjAnnotator.s");
             }
             else
             {
@@ -690,7 +691,11 @@ namespace StoryGenerator.HomeAnnotation
                 {
                     if (tsfm.name.Contains(str))
                     {
-
+                        if(tsfm.name.Contains("Coffee_table"))
+                        {
+                            Debug.Log("tsfm.nama = " + tsfm.name + " in ObjAnnotator.s with list");
+                        }
+                        
                         SingleNMO nmo_new = new SingleNMO();
                         nmo_new.center = new float[3] { 0.0f, 0.0f, 0.0f };
                         nmo_new.size = new float[3] { 0.0f, 0.0f, 0.0f };
