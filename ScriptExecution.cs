@@ -6634,8 +6634,9 @@ namespace StoryGenerator.Utilities
         private int EstimateFrameNumber(StateList current)
         {
             const int GOTO_MAX_NUMBER = 800;
-            const int TYPE_MAX_NUMBER = 550;  // TODO: added by Ye Win 20220914. Set max number based on frame rate 30
-            const int VACUUM_MAX_NUMBER = 300;  // TODO: added by Ye Win 20220914. Set max number based on frame rate 30
+            const int TYPE_MAX_NUMBER = 550;  // added by Ye Win 20220914. Set max number based on frame rate 30
+            const int VACUUM_MAX_NUMBER = 300;  // added by Ye Win 20220914. Set max number based on frame rate 30
+            const int FALLFROM_MAX_NUMBER = 350;  // added by Ye Win 20220921. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
@@ -6648,11 +6649,15 @@ namespace StoryGenerator.Utilities
                 }
                 else if (s.Action is TypeAction)
                 {
-                    result += TYPE_MAX_NUMBER;  // TODO: added by Ye Win 20220914. Set max number based on frame rate 30
+                    result += TYPE_MAX_NUMBER;  // added by Ye Win 20220914. Set max number based on frame rate 30
                 }
                 else if (s.Action is VacuumAction)
                 {
-                    result += VACUUM_MAX_NUMBER;  // TODO: added by Ye Win 20220914. Set max number based on frame rate 30
+                    result += VACUUM_MAX_NUMBER;  // added by Ye Win 20220914. Set max number based on frame rate 30
+                }
+                else if (s.Action is FallFromAction)
+                {
+                    result += FALLFROM_MAX_NUMBER;  // added by Ye Win 20220921. Set max number based on frame rate 30
                 }
                 else
                 {
