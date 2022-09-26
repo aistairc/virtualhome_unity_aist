@@ -6637,6 +6637,7 @@ namespace StoryGenerator.Utilities
             const int TYPE_MAX_NUMBER = 550;  // added by Ye Win 20220914. Set max number based on frame rate 30
             const int VACUUM_MAX_NUMBER = 300;  // added by Ye Win 20220914. Set max number based on frame rate 30
             const int FALLFROM_MAX_NUMBER = 350;  // added by Ye Win 20220921. Set max number based on frame rate 30
+            const int UNFOLD_MAX_NUMBER = 300;  // added by Ye Win 20220926. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
@@ -6658,6 +6659,10 @@ namespace StoryGenerator.Utilities
                 else if (s.Action is FallFromAction)
                 {
                     result += FALLFROM_MAX_NUMBER;  // added by Ye Win 20220921. Set max number based on frame rate 30
+                }
+                else if (s.Action is UnFoldAction)
+                {
+                    result += UNFOLD_MAX_NUMBER;  // added by Ye Win 20220926. Set max number based on frame rate 30
                 }
                 else
                 {
