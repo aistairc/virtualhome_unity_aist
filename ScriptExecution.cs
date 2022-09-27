@@ -5167,6 +5167,13 @@ namespace StoryGenerator.Utilities
                         s.RemoveObject("CHARACTER_STATE");
                         s.AddActionFlag("STANDUP");
                     }
+
+                    //START - Added by Ye Win 20220927 - to clear hand grabbed obj after PUTOBJBACK action
+                    if (fbbe == FullBodyBipedEffector.RightHand)
+                        s.RemoveObject("RIGHT_HAND_OBJECT");
+                    else if (fbbe == FullBodyBipedEffector.LeftHand)
+                        s.RemoveObject("LEFT_HAND_OBJECT");
+                    //END
                     yield return s;
                 }
             }
@@ -5509,12 +5516,19 @@ namespace StoryGenerator.Utilities
                 if (go.name.ToLower().Contains("cabinet"))
                 {
                     List<int> swis = hi.SwitchIndices(HandInteraction.ActivationAction.Open);
-                    foreach (int swi in swis)
-                    {
-                        yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
-                        swi);
-                        hi.switches[swi].UpdateStateObject();
-                    }
+                    
+                    //START - Added by Ye Win 20220927 - to open only one bathroom cabinet not all three
+                    yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
+                    swis[0]);
+                    hi.switches[swis[0]].UpdateStateObject();
+                    //END
+
+                    //foreach (int swi in swis)
+                    //{
+                    //    yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
+                    //    swi);
+                    //    hi.switches[swi].UpdateStateObject();
+                    //}
                 }
                 else
                 {
@@ -6638,6 +6652,7 @@ namespace StoryGenerator.Utilities
             const int VACUUM_MAX_NUMBER = 300;  // added by Ye Win 20220914. Set max number based on frame rate 30
             const int FALLFROM_MAX_NUMBER = 350;  // added by Ye Win 20220921. Set max number based on frame rate 30
             const int UNFOLD_MAX_NUMBER = 300;  // added by Ye Win 20220926. Set max number based on frame rate 30
+            const int WIPE_MAX_NUMBER = 300;  // added by Ye Win 20220927. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
@@ -6663,6 +6678,10 @@ namespace StoryGenerator.Utilities
                 else if (s.Action is UnFoldAction)
                 {
                     result += UNFOLD_MAX_NUMBER;  // added by Ye Win 20220926. Set max number based on frame rate 30
+                }
+                else if (s.Action is WipeAction)
+                {
+                    result += WIPE_MAX_NUMBER;  // added by Ye Win 20220927. Set max number based on frame rate 30
                 }
                 else
                 {
