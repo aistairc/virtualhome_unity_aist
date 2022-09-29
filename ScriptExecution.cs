@@ -5739,6 +5739,7 @@ namespace StoryGenerator.Utilities
         {
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return ExecuteWalkOrRun(s, false, s.Action.Name);
+            yield return characterControl.StartCoroutine(characterControl.Turn((Vector3)s.GetObject("PUT_POSITION")));
             yield return ExecutePut(s);
         }
 
