@@ -7483,6 +7483,11 @@ namespace StoryGenerator.Utilities
             // Add for check
             Debug.Log("sExcuters counts = " + sExecutors.Count + " at ParseScript in Execution.cs");
             Debug.Log("name of h = " + _h.name);
+
+            foreach(string s in scriptLines)
+            {
+                Debug.Log(" ParseScript " + s);
+            }
             for (int i = 0; i < sExecutors.Count; i++)
             {
                 ParseScriptForChar(sExecutors[i], scriptLines, i, actionEquivProvider);
@@ -7498,7 +7503,8 @@ namespace StoryGenerator.Utilities
             {
                 string line = scriptLines[lineNo];
                 ScriptLine sl = ParseLineForChar(charIndex, line, lineNo, actionEquivProvider);
-
+                //Debug.Log(" ParseScriptForChar sl " + sl.Parameters[0].Item1);
+                Debug.Log(" ParseScriptForChar Interaction " + sl.Interaction);
                 if (sl != null)
                     sLines.Add(sl);
             }
@@ -7972,6 +7978,7 @@ namespace StoryGenerator.Utilities
                     throw new ScriptReaderException(string.Format("Can not parse action for the line containing {0}", sentence));
 
                 string actionStr = m.Groups[1].Value;
+                Debug.Log(" ParseLineForChar actionStr " + actionStr);
 
                 // Parse parameters
                 r = new Regex(pattParams);
