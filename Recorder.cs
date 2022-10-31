@@ -56,6 +56,7 @@ namespace StoryGenerator.Recording
         const int INITIAL_FRAME_SKIP = 2;
         public int ImageWidth = 640; // 375;
         public int ImageHeight = 480; //250;
+        public int _per_frame = 5;   // Add Oct/2022
 
         // Get target position in screen coordinate added 2022
         [Header("Object Rect in Screen Coordinate")]
@@ -91,6 +92,7 @@ namespace StoryGenerator.Recording
         private bool _canGrabbedEdgeUpdata;
         //private GameObject _grrabbedGO;
         private String _HandGrabbed;
+       
         // do not use globals :(
         //private List<GameObject> _tagetGOChar = new List<GameObject>();
         private struct VisibleRect
@@ -296,6 +298,22 @@ namespace StoryGenerator.Recording
                 StartCoroutine(OnEndOfFrame(Path.Combine(OutputDirectory, FILE_NAME_PREFIX)));
             }
         }
+
+        // Add Oct/2022
+
+        void OnValidate()
+        {
+            _rectTransformObject = _RectUIObject.GetComponent<RectTransform>();
+            _rectTransformCharacter = _RectUICharacter.GetComponent<RectTransform>();
+
+            Vector3 rectPosition = new Vector3( ImageWidth * 0.5f, ImageHeight * 0.5f, 0f);
+            _rectTransformObject.transform.position = rectPosition;
+            _rectTransformCharacter.transform.position = rectPosition;
+            Vector2 rectSize = new Vector2(ImageWidth, ImageHeight);
+            _rectTransformObject.sizeDelta = rectSize;
+            _rectTransformCharacter.sizeDelta = rectSize;
+        }
+
         
         // yes init by Unity... Added 2022
         void Start()
@@ -308,8 +326,37 @@ namespace StoryGenerator.Recording
             _RectUIObject.GetComponent<Image>().color = _textObject.color = Color.red;
             _RectUICharacter.GetComponent<Image>().color = _textCharacter.color = Color.red;
 
+            // Add Oct/2022
+            // get command line args and set size of rects
+            string[] args = System.Environment.GetCommandLineArgs();
+            float rectWidth = ImageWidth;
+            float rectHeight = ImageHeight;
+            for (int i = 0; i < args.Length; i++)
+            {
+
+                switch(args[i])
+                {
+                    case "-screen-width":
+                        rectWidth = float.Parse(args[i+1]);
+                        break;
+                    case "-screen-height":
+                        rectHeight = float.Parse(args[i+1]);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            Vector3 rectPosition = new Vector3( rectWidth * 0.5f, rectHeight * 0.5f, 0f);
+            _rectTransformObject.transform.position = rectPosition;
+            _rectTransformCharacter.transform.position = rectPosition;
+            Vector2 rectSize = new Vector2(rectWidth, rectHeight);
+            _rectTransformObject.sizeDelta = rectSize;
+            _rectTransformCharacter.sizeDelta = rectSize;
+
             _textCharacter.text = "No Character";
-            _textObject.text = "No Object";
+            _textObject.text = "No Object   " + rectSize.ToString("0000");
             //_renderer = _targetGO.GetComponent<Renderer>();
             //_camViewPortRect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
             //}
@@ -517,21 +564,25 @@ namespace StoryGenerator.Recording
 
             if(_calcRect == true | _calcRectChar == true)
             {
-                string jsonstring = JsonUtility.ToJson(_vod);
-                string vofilePath = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_2D.json";
-                
-                
-                using(StreamWriter sw = new StreamWriter(vofilePath, true, System.Text.Encoding.GetEncoding("UTF-8")))
+                if( (frameNum % _per_frame) == 0)
                 {
-                    try
-                    {
-                        sw.Write(jsonstring);
-                    }
-                    catch(Exception e)
-                    {
-                        Debug.Log(e);
+                    string jsonstring = JsonUtility.ToJson(_vod);
+                    string vofilePath = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_2D.json";
+                
+                
+                    using(StreamWriter sw = new StreamWriter(vofilePath, true, System.Text.Encoding.GetEncoding("UTF-8")))
+                    {   
+                        try
+                        {
+                            sw.Write(jsonstring);
+                        }
+                        catch(Exception e)
+                        {
+                            Debug.Log(e);
+                        }
                     }
                 }
+                
                 
 
                 _vod.voList.Clear();
@@ -595,22 +646,25 @@ namespace StoryGenerator.Recording
             // Add 2022 out put grap per frame...
             if(_outGraph == true)
             {
-                string filePathGraph = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_graph.json";
-                //UpdateCharacterOfGraph();
-                _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
-                UpDateGraphNodeState(); // update node state
-                UpDateGrabbedEdge();    // update edge sate
-                string jsonstringGraph = JsonConvert.SerializeObject(_currentGraph);
-
-                using(StreamWriter sw = new StreamWriter(filePathGraph, true, System.Text.Encoding.GetEncoding("UTF-8")))
+                if( (frameNum % _per_frame) == 0)
                 {
-                    try
-                     {
-                        sw.Write(jsonstringGraph);
-                    }
-                    catch(Exception e)
+                    string filePathGraph = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_graph.json";
+                    //UpdateCharacterOfGraph();
+                    _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
+                    UpDateGraphNodeState(); // update node state
+                    UpDateGrabbedEdge();    // update edge sate
+                    string jsonstringGraph = JsonConvert.SerializeObject(_currentGraph);
+
+                    using(StreamWriter sw = new StreamWriter(filePathGraph, true, System.Text.Encoding.GetEncoding("UTF-8")))
                     {
-                        Debug.Log(e);
+                        try
+                        {
+                            sw.Write(jsonstringGraph);
+                        }
+                        catch(Exception e)
+                        {
+                            Debug.Log(e);
+                        }
                     }
                 }
             }
@@ -897,7 +951,21 @@ namespace StoryGenerator.Recording
                 return GetNoVisRect();
             }
 
-             Vector3[] vertices;
+            // Add Oct/2022
+            // but not use...
+            /*
+            BoxCollider[] bc = target.transform.GetComponentsInChildren<BoxCollider>();
+            if( bc.Length != 0)
+            {
+                foreach(BoxCollider b in bc)
+                {
+                    b.enabled = true;
+                }
+            }
+            */
+            
+
+            Vector3[] vertices;
            
             if(human == false)
             {
@@ -923,19 +991,43 @@ namespace StoryGenerator.Recording
                 if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 40.0f))
                 {
                     // check name of gameobject here...
-                    if(hit.transform.parent.name == target.name || hit.transform.parent.parent.name == target.name)
-                    {
-                        Debug.Log("parent name = " + hit.transform.parent.name + "  name = " + hit.transform.name);
-                        targetVisible = true;
-                        break;
-                    }
+                    
 
                     if(human == true)
                     {
-                        //Debug.Log("I found character body parts");
+                        /*
+                        if(hit.transform.parent.name == target.name || hit.transform.name == target.name)
+                        {
+                            //Debug.Log("I found character body parts");
+                            Debug.Log("Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
+                            targetVisible = true;
+                            break;
+                        }
+                        else
+                        {
+                            Debug.Log("No Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
+                        }
+                        */
+                        Debug.Log("Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
                         targetVisible = true;
                         break;
+                        
                     }
+                    else
+                    {
+                        Debug.DrawLine(cam.transform.position, target.transform.TransformPoint(pos), Color.red);
+                        if(hit.transform.parent.name == target.name || hit.transform.parent.parent.name == target.name)
+                        {
+                            Debug.Log("Hit object parent name = " + hit.transform.parent.name + "  name = " + hit.transform.name + "  target name = " + target.name + "  frameNum = " + frameNum);
+                            targetVisible = true;
+                            break;
+                        }
+                        else
+                        {
+                            Debug.Log("No Hit object parent name = " + hit.transform.parent.name + "  name = " + hit.transform.name + "  targt name = " + target.name + "  frameNum = " + frameNum);
+                        }
+                    }
+
 
                 }
             }
@@ -1106,14 +1198,18 @@ namespace StoryGenerator.Recording
 
         private void SetScreenRectObject(VisibleRect vr, string name)
         {
-            Vector3 pos = _rectTransformObject.anchoredPosition;
-            pos.x = vr.rect.center.x;
-            pos.y = vr.rect.center.y;
+            //Vector3 pos = _rectTransformObject.anchoredPosition;
+            //pos.x = vr.rect.center.x;
+            //pos.y = vr.rect.center.y;
+            //Vector3 pos = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);
 
-            _rectTransformObject.anchoredPosition = pos;
+            
+            //_rectTransformObject.anchoredPosition = pos;
+            _rectTransformObject.transform.position = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);;
 
-            _rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, vr.rect.size.x + _space);
-            _rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, vr.rect.size.y + _space);
+            //_rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, vr.rect.size.x + _space);
+            //_rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, vr.rect.size.y + _space);
+            _rectTransformObject.sizeDelta = new Vector2(vr.rect.width, vr.rect.height);
 
             _RectUIObject.GetComponent<Image>().color = _textObject.color = vr.color;
 
@@ -1124,14 +1220,17 @@ namespace StoryGenerator.Recording
 
         private void SetScreenRectCharacter(VisibleRect vr, string name)
         {
-            Vector3 pos = _rectTransformCharacter.anchoredPosition;
-            pos.x = vr.rect.center.x;
-            pos.y = vr.rect.center.y;
+            //Vector3 pos = _rectTransformCharacter.anchoredPosition;
+            //pos.x = vr.rect.center.x;
+            //pos.y = vr.rect.center.y;
+            //Vector3 pos = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);
 
-            _rectTransformCharacter.anchoredPosition = pos;
+            //_rectTransformCharacter.anchoredPosition = pos;
+            _rectTransformCharacter.transform.position = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);;
 
-            _rectTransformCharacter.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, vr.rect.size.x + _space);
-            _rectTransformCharacter.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, vr.rect.size.y + _space);
+            //_rectTransformCharacter.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, vr.rect.size.x + _space);
+            //_rectTransformCharacter.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, vr.rect.size.y + _space);
+            _rectTransformCharacter.sizeDelta = new Vector2(vr.rect.width, vr.rect.height);
 
             _RectUICharacter.GetComponent<Image>().color = _textCharacter.color = vr.color;
 
