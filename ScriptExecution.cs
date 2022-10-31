@@ -5167,6 +5167,13 @@ namespace StoryGenerator.Utilities
                         s.RemoveObject("CHARACTER_STATE");
                         s.AddActionFlag("STANDUP");
                     }
+
+                    //START - Added by Ye Win 20220927 - to clear hand grabbed obj after PUTOBJBACK action
+                    if (fbbe == FullBodyBipedEffector.RightHand)
+                        s.RemoveObject("RIGHT_HAND_OBJECT");
+                    else if (fbbe == FullBodyBipedEffector.LeftHand)
+                        s.RemoveObject("LEFT_HAND_OBJECT");
+                    //END
                     yield return s;
                 }
             }
@@ -5509,12 +5516,19 @@ namespace StoryGenerator.Utilities
                 if (go.name.ToLower().Contains("cabinet"))
                 {
                     List<int> swis = hi.SwitchIndices(HandInteraction.ActivationAction.Open);
-                    foreach (int swi in swis)
-                    {
-                        yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
-                        swi);
-                        hi.switches[swi].UpdateStateObject();
-                    }
+                    
+                    //START - Added by Ye Win 20220927 - to open only one bathroom cabinet not all three
+                    yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
+                    swis[0]);
+                    hi.switches[swis[0]].UpdateStateObject();
+                    //END
+
+                    //foreach (int swi in swis)
+                    //{
+                    //    yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
+                    //    swi);
+                    //    hi.switches[swi].UpdateStateObject();
+                    //}
                 }
                 else
                 {
@@ -5725,6 +5739,7 @@ namespace StoryGenerator.Utilities
         {
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return ExecuteWalkOrRun(s, false, s.Action.Name);
+            yield return characterControl.StartCoroutine(characterControl.Turn((Vector3)s.GetObject("PUT_POSITION")));
             yield return ExecutePut(s);
         }
 
@@ -5809,7 +5824,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.CUT, s.Action.ScriptLine); // Changed InteractionType.WIPE to .CUT by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.CutLeft();
@@ -5836,7 +5851,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.EAT, s.Action.ScriptLine); // Changed InteractionType.WIPE to .EAT by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.EatLeft();
@@ -5910,7 +5925,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.LIFT, s.Action.ScriptLine); // Changed InteractionType.WIPE to .LIFT by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.LiftLeft();
@@ -6000,7 +6015,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SQUEEZE, s.Action.ScriptLine); // Changed InteractionType.WIPE to .SQEEZE by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SqueezeLeft();
@@ -6036,7 +6051,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SWEEP, s.Action.ScriptLine); // Changed InteractionType.WIPE to .SWEEP by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SweepLeft();
@@ -6080,7 +6095,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.STIR, s.Action.ScriptLine); // Changed InteractionType.WIPE to .STIR by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.StirLeft();
@@ -6107,7 +6122,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.THROW, s.Action.ScriptLine); // Changed InteractionType.WIPE to .THROW by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.ThrowLeft();
@@ -6197,7 +6212,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.WRAP, s.Action.ScriptLine); // Changed InteractionType.WIPE to .WRAP by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.WrapLeft();
@@ -6394,7 +6409,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SMELL, s.Action.ScriptLine); // Changed InteractionType.WIPE to .SMELL by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SmellLeft();
@@ -6421,7 +6436,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SOAK, s.Action.ScriptLine); // Changed InteractionType.WIPE to .SOAK by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SoakLeft();
@@ -6448,7 +6463,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.POUR, s.Action.ScriptLine); // Changed InteractionType.WIPE to .POUR by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.PourLeft();
@@ -6469,7 +6484,7 @@ namespace StoryGenerator.Utilities
             SetTargetObject2Recorder(s.Action.Name.Name, s.Action.Name.Instance);
             Debug.Log("Execute Climb...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.CLIMB, s.Action.ScriptLine); // Changed InteractionType.FOLD to .CLIMB by YE WIN 2022/09/01
             Debug.Log("Should Prepare NavMesh !!!!!");
             //UtilsAnnotator.ProcessHomeNoCoffeetable(_h, randomizeExecution);
             UtilsAnnotator.SetCoffeeTableObstacle(false);
@@ -6480,7 +6495,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute GoDown...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.GODOWN, s.Action.ScriptLine); // Changed InteractionType.FOLD to .GODOWN by YE WIN 2022/09/01
             //UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.GoDown());
         }
@@ -6489,7 +6504,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute LayDown...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.LAYDOWN, s.Action.ScriptLine); // Changed InteractionType.FOLD to .LAYDOWN by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.LayDown());
         }
@@ -6498,7 +6513,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute Sleep...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SLEEP, s.Action.ScriptLine); // Changed InteractionType.FOLD to .SLEEP by YE WIN 2022/09/01
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.Sleep());
         }
@@ -6634,14 +6649,50 @@ namespace StoryGenerator.Utilities
         private int EstimateFrameNumber(StateList current)
         {
             const int GOTO_MAX_NUMBER = 800;
+            const int TYPE_MAX_NUMBER = 550;  // added by Ye Win 20220914. Set max number based on frame rate 30
+            const int VACUUM_MAX_NUMBER = 300;  // added by Ye Win 20220914. Set max number based on frame rate 30
+            const int FALLFROM_MAX_NUMBER = 350;  // added by Ye Win 20220921. Set max number based on frame rate 30
+            const int UNFOLD_MAX_NUMBER = 300;  // added by Ye Win 20220926. Set max number based on frame rate 30
+            const int WIPE_MAX_NUMBER = 300;  // added by Ye Win 20220927. Set max number based on frame rate 30
+            const int SCRUB_MAX_NUMBER = 350;  // added by Ye Win 20221006. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
 
             foreach (State s in current)
             {
-                if (s.Action is GotoAction) result += GOTO_MAX_NUMBER;  // TODO: Temp. solution, maybe move limit to Action interface
-                else result += OTHER_MAX_NUMBER;
+                if (s.Action is GotoAction)
+                {
+                    result += GOTO_MAX_NUMBER;  // TODO: Temp. solution, maybe move limit to Action interface
+                }
+                else if (s.Action is TypeAction)
+                {
+                    result += TYPE_MAX_NUMBER;  // added by Ye Win 20220914. Set max number based on frame rate 30
+                }
+                else if (s.Action is VacuumAction)
+                {
+                    result += VACUUM_MAX_NUMBER;  // added by Ye Win 20220914. Set max number based on frame rate 30
+                }
+                else if (s.Action is FallFromAction)
+                {
+                    result += FALLFROM_MAX_NUMBER;  // added by Ye Win 20220921. Set max number based on frame rate 30
+                }
+                else if (s.Action is UnFoldAction)
+                {
+                    result += UNFOLD_MAX_NUMBER;  // added by Ye Win 20220926. Set max number based on frame rate 30
+                }
+                else if (s.Action is WipeAction)
+                {
+                    result += WIPE_MAX_NUMBER;  // added by Ye Win 20220927. Set max number based on frame rate 30
+                }
+                else if (s.Action is ScrubAction)
+                {
+                    result += SCRUB_MAX_NUMBER;  // added by Ye Win 20221006. Set max number based on frame rate 30
+                }
+                else
+                {
+                    result += OTHER_MAX_NUMBER;
+                }
             }
             if (result == 0)
                 result = GOTO_MAX_NUMBER;
