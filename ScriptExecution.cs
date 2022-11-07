@@ -6655,6 +6655,7 @@ namespace StoryGenerator.Utilities
             const int UNFOLD_MAX_NUMBER = 300;  // added 20220926. Set max number based on frame rate 30
             const int WIPE_MAX_NUMBER = 300;  // added 20220927. Set max number based on frame rate 30
             const int SCRUB_MAX_NUMBER = 350;  // added 20221006. Set max number based on frame rate 30
+            const int CUT_MAX_NUMBER = 350;  // added 20221107. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
@@ -6688,6 +6689,10 @@ namespace StoryGenerator.Utilities
                 else if (s.Action is ScrubAction)
                 {
                     result += SCRUB_MAX_NUMBER;  // added 20221006. Set max number based on frame rate 30
+                }
+                else if (s.Action is CutAction)
+                {
+                    result += CUT_MAX_NUMBER;  // added 20221107. Set max number based on frame rate 30
                 }
                 else
                 {
