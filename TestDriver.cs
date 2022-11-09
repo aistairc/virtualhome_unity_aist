@@ -817,6 +817,7 @@ namespace StoryGenerator
                         bool isVisObjectCheck = false;
                         bool isOutGraph = false;
                         bool isVisCharacterCeck = false;
+                        bool isVisAllObjectCheck = false;
                         int per_frame = 0;
                         foreach(string str in arguments)
                         {
@@ -860,6 +861,13 @@ namespace StoryGenerator
                                 //str =  "per_frame": 3}
                             }
 
+                            // Add Nov/2022
+                            if(str.Contains("vis_check_object_all")){
+                                if(str.Contains("true")){
+                                    isVisAllObjectCheck = true;
+                                }
+                            }
+
                         }
 
                         foreach(Recorder re in recorders)
@@ -867,6 +875,7 @@ namespace StoryGenerator
                             re._calcRect = isVisObjectCheck;
                             re._calcRectChar = isVisCharacterCeck;
                             re._per_frame = per_frame;
+                            re._calcRectALL = isVisAllObjectCheck;
                         }
 
                         if (currentGraph != null)

@@ -519,10 +519,12 @@ namespace StoryGenerator
 
         public IEnumerator walkOrRunTo(bool isWalk, Vector3 pos, Vector3? lookAt = null, bool shouldCheckPath = true)
         {
+            bool checkFirst = false;
             if (shouldCheckPath)
             {
                 NavMeshPath path = new NavMeshPath();
-                m_nma.CalculatePath(pos, path);
+                checkFirst = m_nma.CalculatePath(pos, path);
+                Debug.Log("Status of NavMesh Calc = " + path.status.ToString());
                 if (path.status != NavMeshPathStatus.PathComplete)
                 {
                     Debug.LogError($"Character cannot reach the destination {pos}");
@@ -538,6 +540,7 @@ namespace StoryGenerator
                 }
             }
 
+            //Debug.Log("1st Calc = " + checkFirst);
             m_pos_lookAt = lookAt;
 
             if (isWalk)
