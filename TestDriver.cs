@@ -23,6 +23,8 @@ using Unity.Profiling;
 using RootMotion.FinalIK;
 
 
+
+
 namespace StoryGenerator
 {
     [RequireComponent(typeof(Recorder))]
@@ -84,6 +86,26 @@ namespace StoryGenerator
 
         void Start()
         {
+            // Add Oct/2022
+            /*
+            GameObject canvas = GameObject.Find("Canvas");
+            GameObject rctObject = canvas.transform.Find("RectObject").gameObject;
+            RectTransform rctTrnsfrm = rctObject.GetComponent<RectTransform>();
+            Rect rct = new Rect(0.0f, 0.0f, 1280f, 720f);
+
+            Vector3 pos = rctTrnsfrm.anchoredPosition;
+            pos.x = rct.center.x;
+            pos.y = rct.center.y;
+
+            rctTrnsfrm.anchoredPosition = pos;
+
+            rctTrnsfrm.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rct.size.x);
+            rctTrnsfrm.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rct.size.y);
+            */
+
+            //string[] args = System.Environment.GetCommandLineArgs();
+
+
             recorder = GetComponent<Recorder>();
 
             _navMeshSurface = GetComponent<NavMeshSurface>();
@@ -795,9 +817,10 @@ namespace StoryGenerator
                         bool isVisObjectCheck = false;
                         bool isOutGraph = false;
                         bool isVisCharacterCeck = false;
+                        int per_frame = 0;
                         foreach(string str in arguments)
                         {
-                            
+                            //Debug.Log("str = " + str);
                             if(str.Contains("vis_check_object"))
                             {
                                 
@@ -826,12 +849,24 @@ namespace StoryGenerator
                                 }
                             }
 
+                            // Add Oct/2022
+                            if(str.Contains("per_frame"))
+                            {
+                                int posStart = str.IndexOf(":") + 2;
+                                string strPerFrame = str.Substring(posStart, (str.Length -1) - posStart);
+                                Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
+                                per_frame = int.Parse(Regex.Replace (str, @"[^0-9]", ""));
+                                Debug.Log("per_frame = " + per_frame);
+                                //str =  "per_frame": 3}
+                            }
+
                         }
 
                         foreach(Recorder re in recorders)
                         {
                             re._calcRect = isVisObjectCheck;
                             re._calcRectChar = isVisCharacterCeck;
+                            re._per_frame = per_frame;
                         }
 
                         if (currentGraph != null)
