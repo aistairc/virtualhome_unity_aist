@@ -60,6 +60,7 @@ namespace StoryGenerator.Recording
 
         // Get target position in screen coordinate added 2022
         [Header("Object Rect in Screen Coordinate")]
+        public bool _calcRectALL;// Calc Rect of all objects
         public bool _calcRect;// Calc Rect of Object 
         public bool _outGraph;// out put graph
         public bool _calcRectChar;// Calc R
@@ -70,6 +71,9 @@ namespace StoryGenerator.Recording
         public int _space;
         public Text _textObject;
         public Text _textCharacter;
+        public Text _textAction;
+        public Text _textTargetObject;
+        private Rect _rect;
         //public Text _textChar;
         //private Rect _rect;
         private RectTransform _rectTransformObject;
@@ -107,10 +111,23 @@ namespace StoryGenerator.Recording
             public string className;
             public int id;
             public GameObject target;
-            public Renderer renderer;
+            //public Renderer renderer;
         }
         
         VisTargetObject _visTargetObject = new VisTargetObject();
+
+        private struct VisRoomObject
+        {
+            public string className;
+            public int id;
+
+            public GameObject room;
+        }
+
+        VisRoomObject _visRoomObject = new VisRoomObject();
+
+    
+        List<GameObject> _targetChildren = new List<GameObject>();
 
         // ======================================================================================== //
         // ==================================                    ================================== //
@@ -236,8 +253,10 @@ namespace StoryGenerator.Recording
             public bool visible;
             public Vector2Int leftTop;
             public Vector2Int rightBottom;
+            public string predicate;
         }
 
+        /*
         [Serializable]
         public struct VisibleChar
         {
@@ -248,7 +267,7 @@ namespace StoryGenerator.Recording
             public Vector2Int leftTop;
             public Vector2Int rightBottom;
         }
-
+        */
 
         // ======================================================================================== //
         // ====================================== Properties ====================================== //
@@ -300,7 +319,6 @@ namespace StoryGenerator.Recording
         }
 
         // Add Oct/2022
-
         void OnValidate()
         {
             _rectTransformObject = _RectUIObject.GetComponent<RectTransform>();
@@ -318,13 +336,11 @@ namespace StoryGenerator.Recording
         // yes init by Unity... Added 2022
         void Start()
         {
-            //_rect = new Rect();
-            //if(_calcRect == true){
             _rectTransformObject = _RectUIObject.GetComponent<RectTransform>();
             _rectTransformCharacter = _RectUICharacter.GetComponent<RectTransform>();
-
             _RectUIObject.GetComponent<Image>().color = _textObject.color = Color.red;
             _RectUICharacter.GetComponent<Image>().color = _textCharacter.color = Color.red;
+            _textAction.color = _textTargetObject.color = Color.red;
 
             // Add Oct/2022
             // get command line args and set size of rects
@@ -333,7 +349,6 @@ namespace StoryGenerator.Recording
             float rectHeight = ImageHeight;
             for (int i = 0; i < args.Length; i++)
             {
-
                 switch(args[i])
                 {
                     case "-screen-width":
@@ -345,7 +360,6 @@ namespace StoryGenerator.Recording
                     default:
                         break;
                 }
-
             }
 
             Vector3 rectPosition = new Vector3( rectWidth * 0.5f, rectHeight * 0.5f, 0f);
@@ -357,6 +371,7 @@ namespace StoryGenerator.Recording
 
             _textCharacter.text = "No Character";
             _textObject.text = "No Object   " + rectSize.ToString("0000");
+            _textAction.text = "No Action";
             //_renderer = _targetGO.GetComponent<Renderer>();
             //_camViewPortRect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
             //}
@@ -383,6 +398,9 @@ namespace StoryGenerator.Recording
                 Debug.Log("currentFrame " + frameNum + "  scriptLine " + ar.ScriptLine + "  action " + ar.Action + "  frameStart " + ar.FrameStart + "  frameEnd " + ar.FrameEnd);
             }
             
+            // Add Oct/2022
+            _textAction.color = Color.green;
+            _textAction.text = a.ToString();
         }
 
         // This marks the end of execution so that intentional delay after executing all actions
@@ -508,17 +526,65 @@ namespace StoryGenerator.Recording
             cam.targetTexture = renderRT;
             cam.Render();   // <====== yes, u render ....
             //Debug.Log("Render!!!");
+            if(_calcRectALL == true & (frameNum % _per_frame) == 0)
+            {
+                
+                _textTargetObject.text = "Checking All objects";
+                _textTargetObject.color = Color.green;
+                _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
+                Debug.Log("Frame = " + frameNum + "  trasform name = " + _transform);
+                UpDateGraphNodeState(); // update node state
+                UpDateGrabbedEdge();    // update edge sate
+
+                List<EnvironmentObject> eoListInRoom = new List<EnvironmentObject>();
+                eoListInRoom = GetVisCheckGameObjectAll(cam);
+                foreach(EnvironmentObject eo in eoListInRoom)
+                {
+                    if(eo.category == "Characters")
+                        continue;
+
+                    
+                    SetVisCheckGameObject(eo);
+                    if( _visTargetObject.target != null )
+                    {
+                        if(eo.class_name == "kitchencabint")
+                        {
+                            Debug.Log("_visTargetObject.target.name = " + _visTargetObject.target);
+                        }
+                        VisibleRect vrRect = CalcPositionTarget(cam, true);
+                        if( vrRect.vis == true)
+                        {   
+                            VisibleObject vo = new VisibleObject();
+                            vo.name = _visTargetObject.className;   //    _myStr = _className;// _targetGO.name;
+                            vo.id = _visTargetObject.id;
+                            vo.frameId = frameNum;
+                            vo.predicate = _textAction.text;
+                            vo.leftTop = new Vector2Int((int)vrRect.rect.xMin, (int)vrRect.rect.yMax);
+                            vo.rightBottom = new Vector2Int((int)vrRect.rect.xMax, (int)vrRect.rect.yMin);
+                            vo.visible = vrRect.vis;
+                            _vod.voList.Add(vo);
+                        }
+                        
+                        //indexOfObject += 1;
+                        //_textTargetObject.text = "count : " + indexOfObject.ToString();
+                        //_textTargetObject.text = eo.class_name;
+                       
+                    }
+                }
+                               
+            }
 
             // calc rect for object
             if (_calcRect == true)
             {
                 //CalcPositionTarget(cam);
-                VisibleRect vrRect = CalcPositionTarget(cam);
+                VisibleRect vrRect = CalcPositionTarget(cam, false);
 
                 VisibleObject vo = new VisibleObject();
                 vo.name = _visTargetObject.className;   //    _myStr = _className;// _targetGO.name;
                 vo.id = _visTargetObject.id;
                 vo.frameId = frameNum;
+                vo.predicate = _textAction.text;
                 if( vrRect.vis == true)
                 {
                     vo.leftTop = new Vector2Int((int)vrRect.rect.xMin, (int)vrRect.rect.yMax);
@@ -531,7 +597,8 @@ namespace StoryGenerator.Recording
                     vo.rightBottom = new Vector2Int(0, 0);
                     vo.visible = vrRect.vis;
                 }
-                
+                _textTargetObject.color = Color.green;
+                _textTargetObject.text = vo.name;
                 _vod.voList.Add(vo);
 
             }
@@ -545,6 +612,7 @@ namespace StoryGenerator.Recording
 
                 vo.id = 1;
                 vo.frameId = frameNum;
+                vo.predicate = _textAction.text;
                 if( vrRect.vis == true)
                 {
                     vo.leftTop = new Vector2Int((int)vrRect.rect.xMin, (int)vrRect.rect.yMax);
@@ -773,73 +841,109 @@ namespace StoryGenerator.Recording
             }
             //Debug.Log("Amounts of charactors = " + _characters.Count);
         }
+        private string GetRoom(Transform t)
+        {
+            if(t.transform.parent != null)
+                return (t.transform.parent.tag == "Type_Room") ? t.transform.parent.name:GetRoom(t.transform.parent);
+            else
+                return "No Room";
+        }
+        private List<EnvironmentObject> GetVisCheckGameObjectAll(Camera cam)
+        {
+            List<EnvironmentObject> eoList = new List<EnvironmentObject>();
 
+            // Get a room contain current camera
+            EnvironmentObject eoRoom = null;
+            foreach(EnvironmentObject eo in _currentGraph.nodes)
+            {
+                if(eo.category != "Rooms")
+                    continue;
+
+                //Debug.Log("Candidate Name = " + eo.prefab_name);
+                //if(eo.prefab_name == cam.transform.parent.parent.name)
+                //{
+                    //eoRoom = eo;
+                    //break;
+                //}
+
+                if(eo.prefab_name == GetRoom(cam.transform))
+                {
+                    Debug.Log("Room name = " + eo.prefab_name);
+                    eoRoom = eo;
+                    break;
+                }
+                
+            }
+            //Debug.Log("Cam Name = " + cam.transform.parent.parent.name);
+            //Debug.Log("Room Name = " + eoRoom.prefab_name + "cam name = " + cam.transform.parent.parent.name);
+
+            // Get id of eos in room contain current camera
+            List<int> idList = new List<int>();
+            foreach(EnvironmentRelation edge in _currentGraph.edges)
+            {
+                if((edge.to_id == eoRoom.id) & (edge.relation_type == ObjectRelation.INSIDE))
+                {
+                    idList.Add(edge.from_id);
+                }
+            }
+            // Get eos from idList
+            foreach(EnvironmentObject eo in _currentGraph.nodes)
+            {
+                if(idList.Contains(eo.id))
+                {
+                    eoList.Add(eo);
+                    if(eo.class_name == "kitchencabinet")   // not "kitchen_cabinet" in Prefabclass.json
+                    {
+                        Debug.Log("Frame = " + frameNum + "kithen Cabinet eo_pos = " + eo.transform.position +
+                                "   obj_pos = " + eo.obj_transform.GetPosition().ToString("00.00") );
+                    }
+                }
+                    
+            }
+
+            return eoList;
+        }
         // for the target object visiblity. set target evironment object here....
         public void SetVisCheckGameObject(EnvironmentObject eo)//string class_name, int id)
         {
             if(eo != null)
             {
-                //_targetEO = eo;
-
                 _visTargetObject.target = eo.transform.gameObject;
-                if(_visTargetObject.target != null & eo.id != -1)
-                {   
-                    Debug.Log(" id = " + eo.id );
-                    _visTargetObject.renderer = _visTargetObject.target.GetComponent<Renderer>();
-                    _visTargetObject.className = eo.class_name;
-                    _visTargetObject.id = eo.id;
-
-                    // for check target object by change material of target.....
-                    /*
-                    Shader shader = _targetGO.GetComponent<MeshRenderer>().material.shader;
-                    Material mt_red = new Material(shader);
-                    mt_red.color = Color.red;
-                    _targetGO.GetComponent<MeshRenderer>().material = mt_red;
-                    */
-                }
-                
-                // and more...
-                if(eo.category == "Rooms")
+                switch(eo.category)
                 {
-                    _visTargetObject.target = null;
-                    _visTargetObject.renderer = null;
-                    _visTargetObject.className = "Rooms";
-                    _visTargetObject.id = -1;
-                }
-
-                if(eo.category == "Walls")
-                {
-                    _visTargetObject.target = null;
-                    _visTargetObject.renderer = null;
-                    _visTargetObject.className = "Walls";
-                    _visTargetObject.id = -1;
-                }
-
-                if(eo.category == "Ceiling")
-                {
-                    _visTargetObject.target = null;
-                    _visTargetObject.renderer = null;
-                    _visTargetObject.className = "Ceiling";
-                    _visTargetObject.id = -1;
-                }
-
-                if(eo.category == "Floor")
-                {
-                    _visTargetObject.target = null;
-                    _visTargetObject.renderer = null;
-                    _visTargetObject.className = "Floor";
-                    _visTargetObject.id = -1;
-                }
-                
+                    case "Rooms":
+                        _visTargetObject.target = null;
+                        //_visTargetObject.renderer = null;
+                        _visTargetObject.className = "Rooms";
+                        _visTargetObject.id = -1;
+                        break;
+                    case "Walls":
+                        _visTargetObject.target = null;
+                        //_visTargetObject.renderer = null;
+                        _visTargetObject.className = "Walls";
+                        _visTargetObject.id = -1;
+                        break;
+                    case "Ceiling":
+                        _visTargetObject.target = null;
+                        //_visTargetObject.renderer = null;
+                        _visTargetObject.className = "Ceiling";
+                        _visTargetObject.id = -1;
+                        break;
+                    case "Floor":
+                        _visTargetObject.target = null;
+                        //_visTargetObject.renderer = null;
+                        _visTargetObject.className = "Floor";
+                        _visTargetObject.id = -1;
+                        break;
+                    default:
+                        if(_visTargetObject.target != null & eo.id != -1)
+                        {   
+                            _visTargetObject.className = eo.class_name;
+                            _visTargetObject.id = eo.id;
+                        }
+                        break;
+                 }
             }
-            else
-            {
-                _visTargetObject.target = null;
-                _visTargetObject.renderer = null;
-                _visTargetObject.className = "non";
-                _visTargetObject.id = -1;
-            }
-
             
             
             //_calcRect = true;
@@ -938,35 +1042,174 @@ namespace StoryGenerator.Recording
                 }
             }
         }
-        // Update character state of graph, I think it no needed anymore
-      
-        // Update character state of graph, I think it no needed anymore
-
+        
         // Add 2022 for checking a object positon with screen coordinate
-
-        private VisibleRect GUI2Rect(Camera cam, GameObject target, bool human)
+        private  VisibleRect CreateGUIRectChar(Camera cam, GameObject target)
         {
+            VisibleRect vr = new VisibleRect();
+            
+            if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(cam), target.GetComponent<Renderer>().bounds) == false)
+            {
+                 return GetNoVisRect();
+            }
+
+            Vector3[] vertices;
+            Mesh mesh = new Mesh();
+            SkinnedMeshRenderer smr = target.GetComponent<SkinnedMeshRenderer>();
+            smr.BakeMesh(mesh, true);
+            vertices = mesh.vertices;
+
+            RaycastHit hit;
+            bool targetVisible = false;
+            foreach(Vector3 pos in vertices)
+            {
+                if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 8.0f))
+                {
+                    //_textTargetObject.text = hitName;   
+                    targetVisible = true;
+                    break;
+                }
+            }
+
+            if(targetVisible == true)
+            {
+                //float x1 = float.MaxValue, y1 = float.MaxValue, x2 = float.MinValue, y2 = float.MinValue;
+                List<Vector2> pointList = new List<Vector2>();
+                foreach (Vector3 vert in vertices)
+                {
+                    //Vector2 tmp = WorldToGUIPoint(cam, target.transform.TransformPoint(vert));
+                    // compare with shrink direction 
+                    Vector2 tmp = cam.WorldToScreenPoint(target.transform.TransformPoint(vert));
+                    pointList.Add(tmp);
+                    //if (tmp.x < x1) x1 = tmp.x;
+                    //if (tmp.x > x2) x2 = tmp.x;
+                    //if (tmp.y < y1) y1 = tmp.y;
+                    //if (tmp.y > y2) y2 = tmp.y;
+                }
+
+                float xMin = (float)ImageWidth;
+                float yMin = (float)ImageHeight;
+                float xMax = 0.0f;
+                float yMax = 0.0f;
+
+
+                foreach(Vector2 point in pointList)
+                {
+                    if(point.x < xMin ) xMin = point.x;
+                    if(point.x > xMax ) xMax = point.x;
+                    if(point.y < yMin ) yMin = point.y;
+                    if(point.y > yMax ) yMax = point.y;
+                }
+                vr.rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin); 
+                //Debug.Log("Frame = " + frameNum + "  Single xMin = " + xMin + "  yMin = " + yMin + "  xMax = " + xMax + "  yMax = " + yMax + "  Rect Max = " + vr.rect.max + "  Rect Min" + vr.rect.min);
+                vr.color = Color.green;
+                vr.vis = true;
+                vr = CheckVisRect(vr);
+                //Debug.Log("Rect Max = " + vr.rect.max + "  Rect Min" + vr.rect.min);
+
+            }
+            else
+            {
+                vr = GetNoVisRect();
+            }
+
+            return vr;
+
+        }
+        
+        private VisibleRect CreateGUIRect(Camera cam, GameObject target, List<GameObject> tgo)
+        {
+            
+            VisibleRect vr = new VisibleRect();
              if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(cam), target.GetComponent<Renderer>().bounds) == false)
             {
                 return GetNoVisRect();
             }
-
-            // Add Oct/2022
-            // but not use...
-            /*
-            BoxCollider[] bc = target.transform.GetComponentsInChildren<BoxCollider>();
-            if( bc.Length != 0)
+            //Debug.Log("True Frame = " + frameNum + "  CreateGUIRect Target Name = " + target.name + " _visTargetObject = " +_visTargetObject.target.name);
+            Vector3[] vertices;
+            vertices = target.GetComponent<MeshFilter>().mesh.vertices;
+            RaycastHit hit;
+            bool targetVisible = false;
+            foreach(Vector3 pos in vertices)
             {
-                foreach(BoxCollider b in bc)
+                
+                if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 8.0f))
+                {   
+                    //Debug.Log("Frame = " + frameNum + " amaount of GO = " + _targetChildren.Count + "  CreateGUIRect");
+                    foreach(GameObject go in tgo)
+                    {
+                        //Debug.Log("Frame = " + frameNum + " hierarchy name = " + transform.name + "  hit tr name = " + hit.transform.name);
+                        if(go.name == hit.transform.name)
+                        {
+                            targetVisible = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(targetVisible == true) break;
+            }
+
+            if(targetVisible == true)
+            {
+                Debug.Log("Frame = " + frameNum + "  targetName = " + target.GetComponent<MeshFilter>().mesh.name + "  vertics = " + vertices.Length);
+                //float x1 = float.MaxValue, y1 = float.MaxValue, x2 = float.MinValue, y2 = float.MinValue;
+                List<Vector2> pointList = new List<Vector2>();
+                foreach (Vector3 vert in vertices)
                 {
-                    b.enabled = true;
+                    //Vector2 tmp = WorldToGUIPoint(cam, target.transform.TransformPoint(vert));
+                    // compare with shrink direction 
+                    Vector2 tmp = cam.WorldToScreenPoint(target.transform.TransformPoint(vert));
+                    pointList.Add(tmp);
+                    //if (tmp.x < x1) x1 = tmp.x;
+                    //if (tmp.x > x2) x2 = tmp.x;
+                    //if (tmp.y < y1) y1 = tmp.y;
+                    //if (tmp.y > y2) y2 = tmp.y;
+                }
+                //Debug.Log("Frame = " + frameNum + "   targetNeme = " + target.name + "  pointList =  " + pointList.Count);
+                float xMin = (float)ImageWidth;
+                float yMin = (float)ImageHeight;
+                float xMax = 0.0f;
+                float yMax = 0.0f;
+
+
+                foreach(Vector2 point in pointList)
+                {
+                    if(point.x < xMin ) xMin = point.x;
+                    if(point.x > xMax ) xMax = point.x;
+                    if(point.y < yMin ) yMin = point.y;
+                    if(point.y > yMax ) yMax = point.y;
+                }
+                pointList.Clear();
+                vr.rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin); 
+                //Debug.Log("Frame = " + frameNum + "  Single xMin = " + xMin + "  yMin = " + yMin + "  xMax = " + xMax + "  yMax = " + yMax + "  Rect Max = " + vr.rect.max + "  Rect Min" + vr.rect.min);
+                vr.color = Color.green;
+                vr.vis = true;
+                vr = CheckVisRect(vr);
+                //Debug.Log("Rect Max = " + vr.rect.max + "  Rect Min" + vr.rect.min);
+
+            }
+            else
+            {
+                vr = GetNoVisRect();
+            }
+
+            return vr;
+        }
+            
+            
+        private VisibleRect GUI2Rect(Camera cam, GameObject target, bool human)
+        {
+            bool hasMesh = false;
+            if(target.GetComponent<Renderer>() != null) // No Mesh, No Raycast... But some objects have Mesh and collider component
+            {
+                hasMesh = true;
+                if (GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(cam), target.GetComponent<Renderer>().bounds) == false)
+                {
+                    return GetNoVisRect();
                 }
             }
-            */
-            
-
-            Vector3[] vertices;
-           
+           Vector3[] vertices;
             if(human == false)
             {
                 vertices = target.GetComponent<MeshFilter>().mesh.vertices;
@@ -988,46 +1231,34 @@ namespace StoryGenerator.Recording
             bool targetVisible = false;
             foreach(Vector3 pos in vertices)
             {
-                if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 40.0f))
+                if(human == true)
                 {
-                    // check name of gameobject here...
-                    
-
-                    if(human == true)
+                    if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 8.0f))
                     {
-                        /*
-                        if(hit.transform.parent.name == target.name || hit.transform.name == target.name)
-                        {
-                            //Debug.Log("I found character body parts");
-                            Debug.Log("Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
-                            targetVisible = true;
-                            break;
-                        }
-                        else
-                        {
-                            Debug.Log("No Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
-                        }
-                        */
-                        Debug.Log("Hit humna hit name = " + hit.transform.name + "  taget,name = " + target.name + "  frameNum = " + frameNum);
+                    // check name of gameobject here...
+                        
                         targetVisible = true;
                         break;
-                        
                     }
-                    else
+                }
+                else
+                {
+                        //string hitName = Physics.RaycastAll(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized).Last().transform.name;
+                    // check name of gameobject here...
+                    if(Physics.Raycast(cam.transform.position, (target.transform.TransformPoint(pos) - cam.transform.position).normalized, out hit, 8.0f))
                     {
-                        Debug.DrawLine(cam.transform.position, target.transform.TransformPoint(pos), Color.red);
-                        if(hit.transform.parent.name == target.name || hit.transform.parent.parent.name == target.name)
+                        //_textTargetObject.text = hitName;   
+                        Transform[] transforms = _visTargetObject.target.transform.GetComponentsInChildren<Transform>();
+                        foreach(Transform transform in transforms)
                         {
-                            Debug.Log("Hit object parent name = " + hit.transform.parent.name + "  name = " + hit.transform.name + "  target name = " + target.name + "  frameNum = " + frameNum);
-                            targetVisible = true;
-                            break;
-                        }
-                        else
-                        {
-                            Debug.Log("No Hit object parent name = " + hit.transform.parent.name + "  name = " + hit.transform.name + "  targt name = " + target.name + "  frameNum = " + frameNum);
+                            if(transform.name == hit.transform.name)
+                            {
+                                //Debug.Log("hit name = " + hit.transform.name + "  hierarchy name = " + transform.name + "  target name = " + target.name);
+                                targetVisible = true;
+                                break;
+                            }
                         }
                     }
-
 
                 }
             }
@@ -1040,7 +1271,17 @@ namespace StoryGenerator.Recording
                 
                 return GetNoVisRect();
             }
+            if(hasMesh == false) // means it may be collider...
+            {
+                VisibleRect cr = new VisibleRect();
+                cr.color = Color.green;
+                cr.vis = false;
 
+                Debug.Log(" It's collider maybe...");
+
+                return cr;
+
+            }
 
 
             float x1 = float.MaxValue, y1 = float.MaxValue, x2 = float.MinValue, y2 = float.MinValue;
@@ -1143,13 +1384,30 @@ namespace StoryGenerator.Recording
         //
         //  for object
         //
-        private VisibleRect CalcPositionTarget(Camera cam)
+        private VisibleRect CalcPositionTarget(Camera cam, bool isAll)
         {
-            //_youcansee = false;
-
-            //bool canyouseeme;
-
-             VisibleRect vrRect = new VisibleRect();
+            VisibleRect vrRect = new VisibleRect();
+            List<GameObject> targetGOS = new List<GameObject>();
+            
+            if(_visTargetObject.id  > 0)
+            {
+                Transform[] transforms = _visTargetObject.target.transform.GetComponentsInChildren<Transform>();
+           
+                foreach(Transform t in transforms)
+                {
+                    if (!targetGOS.Contains(t.gameObject))
+                    {
+                        targetGOS.Add(t.gameObject);    // gathering all gameobjects
+                    }
+                }
+              
+            }
+            else
+            {
+                _visTargetObject.id = -1;
+                _textTargetObject.text = " Not defined Index...";
+            }
+            
 
             if(_visTargetObject.id == -1)
             {
@@ -1157,10 +1415,13 @@ namespace StoryGenerator.Recording
             }
             else
             {
-                vrRect = GUI2Rect(cam, _visTargetObject.target, false);
+                Debug.Log("Frame = " + frameNum + "   Count of targetGOS = " + targetGOS.Count);
+                vrRect = GetObjectRect(cam, targetGOS);
+                
             }
 
-            SetScreenRectObject(vrRect, _visTargetObject.className);
+            if(isAll) SetScreenRectObjectAll();
+            else SetScreenRectObject(vrRect, _visTargetObject.className);
 
             return vrRect;
 
@@ -1194,7 +1455,13 @@ namespace StoryGenerator.Recording
 
         }
 
-
+        private void SetScreenRectObjectAll()
+        {
+            _rectTransformObject.transform.position = new Vector3(ImageWidth * 0.5f, ImageHeight * 0.5f, 0f);
+            _rectTransformObject.sizeDelta = new Vector2(ImageWidth - 2.0f, ImageHeight - 2.0f);
+            _RectUIObject.GetComponent<Image>().color = _textObject.color = Color.green;
+            _textObject.text = " Checking all object...";
+        }
 
         private void SetScreenRectObject(VisibleRect vr, string name)
         {
@@ -1205,7 +1472,7 @@ namespace StoryGenerator.Recording
 
             
             //_rectTransformObject.anchoredPosition = pos;
-            _rectTransformObject.transform.position = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);;
+            _rectTransformObject.transform.position = new Vector3(vr.rect.center.x, vr.rect.center.y, 0f);
 
             //_rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, vr.rect.size.x + _space);
             //_rectTransformObject.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, vr.rect.size.y + _space);
@@ -1238,6 +1505,55 @@ namespace StoryGenerator.Recording
                          "  RightBottom = " +((int)( vr.rect.xMax)).ToString("0000") + " , " + ((int)(vr.rect.yMin)).ToString("0000") + 
                          "   "  + name;
         }
+        private VisibleRect GetObjectRect(Camera cam, List<GameObject> tgo)
+        {
+            VisibleRect vrOri = new VisibleRect();
+            vrOri.vis = false;
+            vrOri.color = Color.red;
+            //bool can = false;
+           
+            VisibleRect vr = new VisibleRect();
+            float xMin = (float)ImageWidth;
+            float yMin = (float)ImageHeight;
+            float xMax = 0.0f;
+            float yMax = 0.0f;
+            //Debug.Log("Frame = " + frameNum + "  tgp = " + tgo.Count);
+            foreach(GameObject go in tgo)
+            {
+                if(go.GetComponent<MeshFilter>() != null)
+                {
+                    vr = CreateGUIRect(cam, go, tgo);
+                    if(vr.vis == true)
+                    {
+                        //if(vr.rect.xMin < vrOri.rect.xMin) vrOri.rect.xMin = vr.rect.xMin;
+                        //if(vr.rect.xMax > vrOri.rect.xMax) vrOri.rect.xMax = vr.rect.xMax;
+                        //if(vr.rect.yMin < vrOri.rect.yMin) vrOri.rect.yMin = vr.rect.yMin;                       
+                        //if(vr.rect.yMax > vrOri.rect.yMax) vrOri.rect.yMax = vr.rect.yMax;
+
+                        if(vr.rect.xMin < xMin) xMin = vr.rect.xMin;
+                        if(vr.rect.xMax > xMax) xMax = vr.rect.xMax;
+                        if(vr.rect.yMin < yMin) yMin = vr.rect.yMin;                       
+                        if(vr.rect.yMax > yMax) yMax = vr.rect.yMax;
+                        vrOri.color = Color.green;
+                        vrOri.vis = true;
+                        //can = true;
+                    }
+                }
+            }
+            
+            vrOri.rect = new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
+            //Debug.Log("Frame = " + frameNum + "  Complex xMin = " + xMin + "  yMin = " + yMin + "  xMax = " + xMax + "  yMax = " + yMax + "  Rect Max = " + vrOri.rect.max + "  Rect Min" + vrOri.rect.min);
+            if(vrOri.vis)
+            {
+                return  vrOri;
+            }
+            else
+            {
+                return GetNoVisRect();
+            }
+            
+        }
+
 
         private VisibleRect GetCharRect(Camera cam, List<GameObject> tgo)
         {
@@ -1334,30 +1650,20 @@ namespace StoryGenerator.Recording
             }
 
         }
-
-        private GameObject FindGOfromChar()
+        private void GetChildren(GameObject go)
         {
-            if(_characters != null)
-            {
-
-                List<GameObject> partChar = new List<GameObject>();
-
-                foreach (Transform ct in _characters[0].gameObject.transform)
-                {
-                    //Debug.Log(ct.gameObject.name);
-                    partChar.Add(ct.gameObject);
-                }
-
-                return partChar[0]; // body
+            Transform children = go.GetComponentInChildren < Transform >();
+            // no children, go back..
+            if (children.childCount == 0) {
+                return;
+            }
             
+            foreach(Transform t in children) {
+                _targetChildren.Add(t.gameObject);
+                GetChildren(t.gameObject);
             }
-            else
-            {
-                return null;
-            }
-
-
         }
+    
 
         private bool SeekTargt(GameObject target, Camera cam)
         {

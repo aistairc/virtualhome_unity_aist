@@ -289,6 +289,7 @@ namespace StoryGenerator
             m_animator = GetComponent<Animator>();
             m_rb = GetComponent<Rigidbody> ();
             m_nma = GetComponent<NavMeshAgent>();
+            m_nma.radius = 0.2f;    // ? proparty of radius is not radius of agent,  it is avoidance radius for the agent ...
             m_is = GetComponent<InteractionSystem> ();
 
             m_is.speed = animSpeedMultiplier;
@@ -519,10 +520,14 @@ namespace StoryGenerator
 
         public IEnumerator walkOrRunTo(bool isWalk, Vector3 pos, Vector3? lookAt = null, bool shouldCheckPath = true)
         {
-            if (shouldCheckPath)
+            Debug.Log("Agent Radius = " + m_nma.radius.ToString());
+            Debug.Log("Agent Height = " + m_nma.height.ToString());
+            if (shouldCheckPath)    // never called ...
             {
                 NavMeshPath path = new NavMeshPath();
                 m_nma.CalculatePath(pos, path);
+                Debug.Log("path status = " + path.ToString());
+                Debug.Log("m_nma status = " + m_nma.pathStatus.ToString());
                 if (path.status != NavMeshPathStatus.PathComplete)
                 {
                     Debug.LogError($"Character cannot reach the destination {pos}");
@@ -554,6 +559,7 @@ namespace StoryGenerator
                 m_nma.speed += Random.Range(-0.15f, 0.1f);
             }
 
+            // use SetDestination method .....
             m_nma.isStopped = false;
             m_nma.SetDestination(pos);// <-------------------------- set destnation here !!!
 
@@ -562,6 +568,7 @@ namespace StoryGenerator
                 yield return null;
             }
 
+            Debug.Log(m_nma.pathStatus.ToString());
             Debug.Assert(m_nma.pathStatus == NavMeshPathStatus.PathComplete, "Path is not complete");
             float init_dist = m_nma.remainingDistance;
             float total_displacement = init_dist - m_nma.remainingDistance;

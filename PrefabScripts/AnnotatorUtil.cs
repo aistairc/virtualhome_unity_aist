@@ -79,6 +79,7 @@ namespace StoryGenerator.HomeAnnotation
             //UnityEditor.AI.NavMeshBuilder.ClearAllNavMeshes();
             //UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
 #endif
+
             // Add 2022 for Dynamic NavMesh
             navMeshSurface.BuildNavMesh();
 
@@ -87,6 +88,7 @@ namespace StoryGenerator.HomeAnnotation
                 GlobalRandomization(h);
             }
             Reset();
+
 
             var allChildren = h.GetComponentsInChildren<Transform>();
             foreach (Transform child in allChildren)
@@ -98,6 +100,10 @@ namespace StoryGenerator.HomeAnnotation
                     //ObjectAnnotator.AnnotateObj(child);
                     Debug.Log("child = " + child.name + " in ProcessHome");
                     GameObject go = child.Find("Coffee_T_Nav").gameObject;
+                    if(go != null)
+                    {
+                        go.SetActive(true);
+                    }
                     Debug.Log("Coffee table Nav name = " + go.name);
                     //go.SetActive(true);
                 }
