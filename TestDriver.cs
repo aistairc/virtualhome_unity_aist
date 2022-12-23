@@ -76,8 +76,7 @@ namespace StoryGenerator
             public int frameRate;
         }
 
-        class VisCheck
-        {
+        class VisCheck{
             public string visname;
             public int visid;
         }
@@ -112,8 +111,7 @@ namespace StoryGenerator
             _navMeshSurface = GetComponent<NavMeshSurface>();
 
             // Initialize data from files to static variable to speed-up the execution process
-            if (dataProviders == null)
-            {
+            if (dataProviders == null) {
                 dataProviders = new DataProviders();
             }
 
@@ -135,8 +133,7 @@ namespace StoryGenerator
             //    }
             //}
 
-            if (commServer == null)
-            {
+            if (commServer == null) {
                 InitServer();
             }
             commServer.Driver = this;
@@ -146,13 +143,12 @@ namespace StoryGenerator
 
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-            if (networkRequest == null)
-            {
+            if (networkRequest == null) {
                 commServer.UnlockProcessing(); // Allow to proceed with requests
             }
             StartCoroutine(ProcessNetworkRequest());
         }
-
+        
         private void InitServer()
         {
             string[] args = Environment.GetCommandLineArgs();
@@ -206,12 +202,9 @@ namespace StoryGenerator
             Debug.Log(string.Format("Processing request {0}", request));
 
             NetworkRequest newRequest = null;
-            try
-            {
+            try {
                 newRequest = JsonConvert.DeserializeObject<NetworkRequest>(request);
-            }
-            catch (JsonException)
-            {
+            } catch (JsonException) {
                 return;
             }
 
@@ -254,8 +247,7 @@ namespace StoryGenerator
 
             CameraExpander.ResetCameraExpander();
 
-            while (true)
-            {
+            while (true) {
                 Debug.Log("Waiting for request");
 
                 yield return new WaitUntil(() => networkRequest != null);
@@ -264,37 +256,28 @@ namespace StoryGenerator
 
                 NetworkResponse response = new NetworkResponse() { id = networkRequest.id };
 
-                if (networkRequest.action == "camera_count")
-                {
+                if (networkRequest.action == "camera_count"){
                     response.success = true;
                     response.value = cameras.Count;
-                }
-                else if (networkRequest.action == "character_cameras")
+                } else if (networkRequest.action == "character_cameras")
                 {
                     response.success = true;
                     response.message = JsonConvert.SerializeObject(CameraExpander.GetCamNames());
-                }
-                else if (networkRequest.action == "camera_data")
-                {
+                } else if (networkRequest.action == "camera_data") {
                     cameraInitializer.Initialize(() => CameraUtils.InitCameras(cameras));
 
                     IList<int> indexes = networkRequest.intParams;
 
-                    if (!CheckCameraIndexes(indexes, cameras.Count))
-                    {
+                    if (!CheckCameraIndexes(indexes, cameras.Count)) {
                         response.success = false;
                         response.message = "Invalid parameters";
-                    }
-                    else
-                    {
+                    } else {
                         IList<CameraInfo> cameraData = CameraUtils.CreateCameraData(cameras, indexes);
 
                         response.success = true;
                         response.message = JsonConvert.SerializeObject(cameraData);
                     }
-                }
-                else if (networkRequest.action == "add_camera")
-                {
+                } else if (networkRequest.action == "add_camera") {
                     CameraConfig camera_config = JsonConvert.DeserializeObject<CameraConfig>(networkRequest.stringParams[0]);
                     String camera_name = cameras.Count().ToString();
                     GameObject go = new GameObject("new_camera" + camera_name, typeof(Camera));
@@ -312,7 +295,7 @@ namespace StoryGenerator
 
                     cameras.Add(new_camera);
                     response.message = "New camera created. Id:" + camera_name;
-                    response.success = true; ;
+                    response.success = true;;
                     cameraInitializer.initialized = false;
                     CameraUtils.DeactivateCameras(cameras);
 
@@ -343,23 +326,19 @@ namespace StoryGenerator
                             response.message = "Error: a camera with this name already exists";
                         }
                     }
-
+                    
 
                 }
-                else if (networkRequest.action == "camera_image")
-                {
-
+                else if (networkRequest.action == "camera_image") {
+                    
                     cameraInitializer.Initialize(() => CameraUtils.InitCameras(cameras));
 
                     IList<int> indexes = networkRequest.intParams;
 
-                    if (!CheckCameraIndexes(indexes, cameras.Count))
-                    {
+                    if (!CheckCameraIndexes(indexes, cameras.Count)) {
                         response.success = false;
                         response.message = "Invalid parameters";
-                    }
-                    else
-                    {
+                    } else {
                         ImageConfig config = JsonConvert.DeserializeObject<ImageConfig>(networkRequest.stringParams[0]);
                         int cameraPass = ParseCameraPass(config.mode);
                         if (cameraPass == -1)
@@ -390,9 +369,7 @@ namespace StoryGenerator
                         }
 
                     }
-                }
-                else if (networkRequest.action == "environment_graph")
-                {
+                } else if (networkRequest.action == "environment_graph") {
 
                     Debug.Log(" I am at environment graph now...");
                     if (currentGraph == null)
@@ -413,15 +390,13 @@ namespace StoryGenerator
                         //s_GetGraphMarker.End();
                         response.success = true;
                     }
-
-
+                        
+                        
                     using (s_GetMessageMarker.Auto())
                     {
                         response.message = JsonConvert.SerializeObject(currentGraph);
                     }
-                }
-                else if (networkRequest.action == "expand_scene")
-                {
+                } else if (networkRequest.action == "expand_scene") {
                     cameraInitializer.initialized = false;
                     List<IEnumerator> animationEnumerators = new List<IEnumerator>();
 
@@ -430,10 +405,8 @@ namespace StoryGenerator
 
                     Dictionary<GameObject, int> char_ind = new Dictionary<GameObject, int>();
                     Dictionary<GameObject, List<Tuple<GameObject, ObjectRelation>>> grabbed_objs = new Dictionary<GameObject, List<Tuple<GameObject, ObjectRelation>>>();
-                    try
-                    {
-                        if (currentGraph == null)
-                        {
+                    try {
+                        if (currentGraph == null) {
                             currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                             currentGraph = currentGraphCreator.CreateGraph(transform);
                         }
@@ -443,8 +416,7 @@ namespace StoryGenerator
                         EnvironmentGraph graph = EnvironmentGraphCreator.FromJson(networkRequest.stringParams[1]);
 
 
-                        if (config.randomize_execution)
-                        {
+                        if (config.randomize_execution) {
                             InitRandom(config.random_seed);
                         }
 
@@ -457,16 +429,14 @@ namespace StoryGenerator
                             }
                         }
 
-                        SceneExpander graphExpander = new SceneExpander(dataProviders)
-                        {
+                        SceneExpander graphExpander = new SceneExpander(dataProviders) {
                             Randomize = config.randomize_execution,
                             IgnoreObstacles = config.ignore_obstacles,
                             AnimateCharacter = config.animate_character,
                             TransferTransform = config.transfer_transform
                         };
 
-                        if (networkRequest.stringParams.Count > 2 && !string.IsNullOrEmpty(networkRequest.stringParams[2]))
-                        {
+                        if (networkRequest.stringParams.Count > 2 && !string.IsNullOrEmpty(networkRequest.stringParams[2])) {
                             graphExpander.AssetsMap = JsonConvert.DeserializeObject<IDictionary<string, List<string>>>(networkRequest.stringParams[2]);
                         }
                         // TODO: set this with a flag
@@ -480,7 +450,7 @@ namespace StoryGenerator
                         graphExpander.ExpandScene(transform, graph, currentGraph, expandSceneCount, added_chars, grabbed_objs, exact_expand);
                         Debug.Log(" num chat = " + added_chars.Count + " TestDrive_429");
                         int chid = 0;
-                        foreach (GameObject added_char in added_chars)
+                        foreach(GameObject added_char in added_chars)
                         {
                             Debug.Assert(!currentGraphCreator.IsInGraph(added_char));
 
@@ -490,7 +460,7 @@ namespace StoryGenerator
                             nma.Warp(added_char.transform.position);
 
                             characters.Add(cc);
-
+                            
                             cc.SetSpeed(150.0f);
 
                             CurrentStateList.Add(null);
@@ -545,7 +515,7 @@ namespace StoryGenerator
                                 hi.allowPickUp = true;
                                 hi.grabHandPose = ScriptExecutor.GetGrabPose(obj_grabbedgo).Value; // HandInteraction.HandPose.GrabVertical;
                                 hi.Initialize();
-
+                                    
                             }
                             else
                             {
@@ -581,16 +551,15 @@ namespace StoryGenerator
 
                         }
 
-
+                            
                         CurrentStateList[char_ind[character_grabbing]] = new_state;
                     }
 
-                    //animationEnumerators.AddRange(result.enumerators);
-                    expandSceneCount++;
+                        //animationEnumerators.AddRange(result.enumerators);
+                        expandSceneCount++;
+                    
 
-
-                    foreach (IEnumerator e in animationEnumerators)
-                    {
+                    foreach (IEnumerator e in animationEnumerators) {
                         yield return e;
                     }
                     foreach (CharacterControl c in characters)
@@ -603,11 +572,8 @@ namespace StoryGenerator
 
                     Debug.Log("Re-bake NavMesh at Expand Graph !!! ");
 
-                }
-                else if (networkRequest.action == "point_cloud")
-                {
-                    if (currentGraph == null)
-                    {
+                } else if (networkRequest.action == "point_cloud") {
+                    if (currentGraph == null) {
                         currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                         currentGraph = currentGraphCreator.CreateGraph(transform);
                     }
@@ -615,56 +581,53 @@ namespace StoryGenerator
                     List<ObjectPointCloud> result = exporter.ExportObjects(currentGraph.nodes);
                     response.success = true;
                     response.message = JsonConvert.SerializeObject(result);
-                }
-                else if (networkRequest.action == "instance_colors")
-                {
-                    if (currentGraph == null)
-                    {
+                } else if (networkRequest.action == "instance_colors") {
+                    if (currentGraph == null) {
                         EnvironmentGraphCreator graphCreator = new EnvironmentGraphCreator(dataProviders);
                         currentGraph = graphCreator.CreateGraph(transform);
                     }
                     response.success = true;
                     response.message = JsonConvert.SerializeObject(GetInstanceColoring(currentGraph.nodes));
-                    //} else if (networkRequest.action == "start_recorder") {
-                    //    RecorderConfig config = JsonConvert.DeserializeObject<RecorderConfig>(networkRequest.stringParams[0]);
+                //} else if (networkRequest.action == "start_recorder") {
+                //    RecorderConfig config = JsonConvert.DeserializeObject<RecorderConfig>(networkRequest.stringParams[0]);
 
-                    //    string outDir = Path.Combine(config.output_folder, config.file_name_prefix);
-                    //    Directory.CreateDirectory(outDir);
+                //    string outDir = Path.Combine(config.output_folder, config.file_name_prefix);
+                //    Directory.CreateDirectory(outDir);
 
-                    //    InitRecorder(config, outDir);
+                //    InitRecorder(config, outDir);
 
-                    //    CharacterControl cc = character.GetComponent<CharacterControl>();
-                    //    cc.rcdr = recorder;
+                //    CharacterControl cc = character.GetComponent<CharacterControl>();
+                //    cc.rcdr = recorder;
 
-                    //    if (recorder.saveSceneStates) {
-                    //        List<GameObject> rooms = ScriptUtils.FindAllRooms(transform);
-                    //        State_char sc = character.AddComponent<State_char>();
-                    //        sc.Initialize(rooms, recorder.sceneStateSequence);
-                    //        cc.stateChar = sc;
-                    //    }
+                //    if (recorder.saveSceneStates) {
+                //        List<GameObject> rooms = ScriptUtils.FindAllRooms(transform);
+                //        State_char sc = character.AddComponent<State_char>();
+                //        sc.Initialize(rooms, recorder.sceneStateSequence);
+                //        cc.stateChar = sc;
+                //    }
 
-                    //    foreach (Camera camera in sceneCameras) {
-                    //        camera.gameObject.SetActive(true);
-                    //    }
+                //    foreach (Camera camera in sceneCameras) {
+                //        camera.gameObject.SetActive(true);
+                //    }
 
-                    //    recorder.Animator = cc.GetComponent<Animator>();
-                    //    recorder.Animator.speed = 1;
+                //    recorder.Animator = cc.GetComponent<Animator>();
+                //    recorder.Animator.speed = 1;
 
-                    //    CameraControl cameraControl = new CameraControl(sceneCameras, cc.transform, new Vector3(0, 1.0f, 0));
-                    //    cameraControl.RandomizeCameras = config.randomize_recording;
-                    //    cameraControl.CameraChangeEvent += recorder.UpdateCameraData;
+                //    CameraControl cameraControl = new CameraControl(sceneCameras, cc.transform, new Vector3(0, 1.0f, 0));
+                //    cameraControl.RandomizeCameras = config.randomize_recording;
+                //    cameraControl.CameraChangeEvent += recorder.UpdateCameraData;
 
-                    //    recorder.CamCtrl = cameraControl;
-                    //    recorder.MaxFrameNumber = 1000;
-                    //    recorder.Recording = true;
-                    //} else if (networkRequest.action == "stop_recorder") {
-                    //    recorder.MarkTermination();
-                    //    yield return WAIT_AFTER_END_OF_SCENE;
-                    //    recorder.Recording = false;
-                    //    recorder.Animator.speed = 0;
-                    //    foreach (Camera camera in sceneCameras) {
-                    //        camera.gameObject.SetActive(false);
-                    //    }
+                //    recorder.CamCtrl = cameraControl;
+                //    recorder.MaxFrameNumber = 1000;
+                //    recorder.Recording = true;
+                //} else if (networkRequest.action == "stop_recorder") {
+                //    recorder.MarkTermination();
+                //    yield return WAIT_AFTER_END_OF_SCENE;
+                //    recorder.Recording = false;
+                //    recorder.Animator.speed = 0;
+                //    foreach (Camera camera in sceneCameras) {
+                //        camera.gameObject.SetActive(false);
+                //    }
                 }
                 else if (networkRequest.action == "add_character")
                 {
@@ -743,9 +706,8 @@ namespace StoryGenerator
                 }
                 // TODO: remove character as well
 
-                else if (networkRequest.action == "render_script")
-                {
-
+                else if (networkRequest.action == "render_script") {
+                    
                     VisCheck vco = new VisCheck();
 
                     if (numCharacters == 0)
@@ -763,8 +725,7 @@ namespace StoryGenerator
                     ExecutionConfig config = JsonConvert.DeserializeObject<ExecutionConfig>(networkRequest.stringParams[0]);
 
 
-                    if (config.randomize_execution)
-                    {
+                    if (config.randomize_execution) {
                         InitRandom(config.random_seed);
                     }
 
@@ -773,19 +734,18 @@ namespace StoryGenerator
                         currentGraphCreator = new EnvironmentGraphCreator(dataProviders);
                         currentGraph = currentGraphCreator.CreateGraph(transform);
                         Debug.Log("Yes, create graph...");
-
-
+                       
+                        
                     }
-
+                   
 
                     // Add
                     //string newfolder = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString("00") + DateTime.Now.Day.ToString("00") + DateTime.Now.Hour.ToString("00") + DateTime.Now.Minute.ToString("00");
                     //config.output_folder = "Output_" + newfolder + "/";
                     //Debug.Log("Path = " + config.output_folder);
                     string outDir = Path.Combine(config.output_folder, config.file_name_prefix);
-
-                    if (!config.skip_execution)
-                    {
+                    
+                    if (!config.skip_execution) {
                         Directory.CreateDirectory(outDir);
                     }
                     IObjectSelectorProvider objectSelectorProvider;
@@ -826,7 +786,7 @@ namespace StoryGenerator
                             // Debug.Log($"cameraCtrl is not null? : {recorders[i].CamCtrl != null}");
                             recorders[i].Initialize();
                             recorders[i].Animator = characters[i].GetComponent<Animator>();
-
+                            
                             //recorders[i].Animator.speed = 1;
                         }
 
@@ -842,7 +802,7 @@ namespace StoryGenerator
                     {
                         List<string> scriptLines = networkRequest.stringParams.ToList();
                         // Add for checking script output
-                        for (int i = 0; i < scriptLines.Count; i++)
+                        for(int i = 0; i < scriptLines.Count; i++)
                         {
                             Debug.Log("ScriptList " + i + " = " + scriptLines[i]);
                         }
@@ -859,61 +819,58 @@ namespace StoryGenerator
                         bool isVisCharacterCeck = false;
                         bool isVisAllObjectCheck = false;
                         int per_frame = 5;
-                        foreach (string str in arguments)
+                        foreach(string str in arguments)
                         {
                             //Debug.Log("str = " + str);
-                            if (str.Contains("\"vis_check_object\""))
+                            if(str.Contains("\"vis_check_object\""))
                             {
-
-                                if (str.Contains("true"))
+                                
+                                if(str.Contains("true"))
                                 {
                                     isVisObjectCheck = true;
                                     Debug.Log(" i found vis object mark true !!!");
                                 }
-
+                                
                             }
 
-                            if (str.Contains("\"out_graph\""))
+                            if(str.Contains("\"out_graph\""))
                             {
-                                if (str.Contains("true"))
+                                if(str.Contains("true"))
                                 {
                                     isOutGraph = true;
                                     Debug.Log(" i found out graph mark true !!!");
                                 }
                             }
 
-                            if (str.Contains("\"vis_check_character\""))
+                            if(str.Contains("\"vis_check_character\""))
                             {
-                                if (str.Contains("true"))
-                                {
+                                if(str.Contains("true")){
                                     isVisCharacterCeck = true;
                                     Debug.Log(" i found vis char mark ture !!!");
                                 }
                             }
 
                             // Add Oct/2022
-                            if (str.Contains("\"per_frame\""))
+                            if(str.Contains("\"per_frame\""))
                             {
                                 int posStart = str.IndexOf(":") + 2;
-                                string strPerFrame = str.Substring(posStart, (str.Length - 1) - posStart);
+                                string strPerFrame = str.Substring(posStart, (str.Length -1) - posStart);
                                 Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
-                                per_frame = int.Parse(Regex.Replace(str, @"[^0-9]", ""));
+                                per_frame = int.Parse(Regex.Replace (str, @"[^0-9]", ""));
                                 Debug.Log("per_frame = " + per_frame);
                                 //str =  "per_frame": 3}
                             }
 
                             // Add Nov/2022
-                            if (str.Contains("\"vis_check_object_all\""))
-                            {
-                                if (str.Contains("true"))
-                                {
+                            if(str.Contains("\"vis_check_object_all\"")){
+                                if(str.Contains("true")){
                                     isVisAllObjectCheck = true;
                                 }
                             }
-
+                            
                         }
 
-                        foreach (Recorder re in recorders)
+                        foreach(Recorder re in recorders)
                         {
                             re._calcRect = isVisObjectCheck;
                             re._calcRectChar = isVisCharacterCeck;
@@ -925,22 +882,22 @@ namespace StoryGenerator
                         {
                             Debug.Log(" I have EnvironmentGraph !!!!");
                             // checking objects be visible
-                            for (int i = 0; i < numCharacters; i++)
+                             for (int i = 0; i < numCharacters; i++)
                             {
-                                sExecutors[i].SetEnvironmentGraph(currentGraph);
-                            }
+                                sExecutors[i].SetEnvironmentGraph(currentGraph); 
+                            } 
 
                             // outputing graph
-                            foreach (Recorder re in recorders)
+                            foreach(Recorder re in recorders)
                             {
                                 re._outGraph = isOutGraph;
                                 //re.SetEnvironmentGraph(currentGraph);
                                 re.SetTransfrom(transform); // first  !!!
                                 re.SetEnvironmentGraphCreator(currentGraphCreator); // second !!!
-
-                            }
+                                
+                            }   
                         }
-
+                         
                         // Check amounts of recorders
                         Debug.Log("Num of Recorder = " + recorders.Count);
 
@@ -956,7 +913,7 @@ namespace StoryGenerator
                         ScriptReader.SetRandomizeExecutio(false);
                         ScriptReader.ParseScript(sExecutors, scriptLines, dataProviders.ActionEquivalenceProvider);
 
-
+                    
                         parseSuccess = true;
                     }
                     catch (Exception e)
@@ -998,7 +955,7 @@ namespace StoryGenerator
                             sExecutors[error_messages[error_index].Item1].report.AddItem(error_messages[error_index].Item2.Item1, error_messages[error_index].Item2.Item2);
                         }
 
-
+                    
                         //s_SimulatePerfMarker.End();
 
                         finishedChars = 0;
@@ -1200,8 +1157,8 @@ namespace StoryGenerator
                                 Debug.Log("Using section for UupdateGraph single action = " + single_action);
                                 if (single_action)
                                 {
-                                    currentGraph = currentGraphCreator.UpdateGraph(transform, null, last_action);
-                                    Debug.Log("single_action may be true = " + single_action + "  Amounts of last action = " + last_action.Count);
+                                   currentGraph = currentGraphCreator.UpdateGraph(transform, null, last_action);
+                                   Debug.Log("single_action may be true = " + single_action + "  Amounts of last action = " + last_action.Count);
                                 }
                                 else
                                 {
@@ -1212,14 +1169,12 @@ namespace StoryGenerator
                                               "  changedObjectsName 0 = " + changedObjs.ElementAt<GameObject>(0).name + 
                                               "  changedObjectsName 1 = " + changedObjs.ElementAt<GameObject>(1).name);*/
                                 }
-
+                                    
                             }
                         }
                     }
 
-                }
-                else if (networkRequest.action == "reset")
-                {
+                } else if (networkRequest.action == "reset") {
                     cameraInitializer.initialized = false;
                     networkRequest.action = "environment_graph"; // return result after scene reload
                     currentGraph = null;
@@ -1377,17 +1332,14 @@ namespace StoryGenerator
                     Debug.Log(String.Format("fast reset time: {0}", resetStopwatch.ElapsedMilliseconds));
 
                 }
-                else if (networkRequest.action == "idle")
-                {
+                else if (networkRequest.action == "idle") {
                     response.success = true;
                     response.message = "";
-                }
-                else
-                {
+                } else {
                     response.success = false;
                     response.message = "Unknown action " + networkRequest.action;
                 }
-
+                
                 // Ready for next request
                 networkRequest = null;
 
@@ -1623,8 +1575,7 @@ namespace StoryGenerator
             // This helps with rendering issues (disappearing suit on some cameras)
             SkinnedMeshRenderer[] mrCompoments = character.GetComponentsInChildren<SkinnedMeshRenderer>();
 
-            foreach (SkinnedMeshRenderer mr in mrCompoments)
-            {
+            foreach (SkinnedMeshRenderer mr in mrCompoments) {
                 mr.updateWhenOffscreen = true;
                 mr.enabled = false;
                 mr.enabled = true;
@@ -1635,20 +1586,16 @@ namespace StoryGenerator
         {
             List<GameObject> rooms = ScriptUtils.FindAllRooms(transform);
 
-            foreach (GameObject r in rooms)
-            {
+            foreach (GameObject r in rooms) {
                 r.AddComponent<Properties_room>();
             }
         }
 
         private void InitRandom(int seed)
         {
-            if (seed >= 0)
-            {
+            if (seed >= 0) {
                 UnityEngine.Random.InitState(seed);
-            }
-            else
-            {
+            } else {
                 UnityEngine.Random.InitState((int)DateTimeOffset.Now.ToUnixTimeMilliseconds());
             }
         }
@@ -1657,23 +1604,16 @@ namespace StoryGenerator
         {
             Dictionary<int, float[]> result = new Dictionary<int, float[]>();
 
-            foreach (EnvironmentObject eo in graphNodes)
-            {
-                if (eo.transform == null)
-                {
+            foreach (EnvironmentObject eo in graphNodes) {
+                if (eo.transform == null) {
                     result[eo.id] = new float[] { 1.0f, 1.0f, 1.0f };
-                }
-                else
-                {
+                } else {
                     int instId = eo.transform.gameObject.GetInstanceID();
                     Color instColor;
 
-                    if (ColorEncoding.instanceColor.TryGetValue(instId, out instColor))
-                    {
+                    if (ColorEncoding.instanceColor.TryGetValue(instId, out instColor)) {
                         result[eo.id] = new float[] { instColor.r, instColor.g, instColor.b };
-                    }
-                    else
-                    {
+                    } else {
                         result[eo.id] = new float[] { 1.0f, 1.0f, 1.0f };
                     }
                 }
@@ -1684,8 +1624,7 @@ namespace StoryGenerator
         private void StopCharacterAnimation(GameObject character)
         {
             Animator animator = character.GetComponent<Animator>();
-            if (animator != null)
-            {
+            if (animator != null) {
                 animator.speed = 0;
             }
         }
@@ -1694,7 +1633,7 @@ namespace StoryGenerator
         {
             if (indexes == null) return false;
             else if (indexes.Count == 0) return true;
-            else return indexes.Min() >= 0 && indexes.Max() < count;
+            else return indexes.Min() >= 0 && indexes.Max() < count; 
         }
 
         private int ParseCameraPass(string string_mode)
@@ -1705,8 +1644,7 @@ namespace StoryGenerator
 
         private void CreateSceneInfoFile(string outDir, SceneData sd)
         {
-            using (StreamWriter sw = new StreamWriter(Path.Combine(outDir, "sceneInfo.json")))
-            {
+            using (StreamWriter sw = new StreamWriter(Path.Combine(outDir, "sceneInfo.json"))) {
                 sw.WriteLine(JsonUtility.ToJson(sd, true));
             }
         }
@@ -1844,12 +1782,10 @@ namespace StoryGenerator
 
         public InstanceSelectorProvider(EnvironmentGraph currentGraph)
         {
-            idObjectMap = new Dictionary<int, GameObject>();
+            idObjectMap = new Dictionary<int, GameObject>(); 
 
-            foreach (EnvironmentObject eo in currentGraph.nodes)
-            {
-                if (eo.transform != null)
-                {
+            foreach (EnvironmentObject eo in currentGraph.nodes) {
+                if (eo.transform != null) {
                     idObjectMap[eo.id] = eo.transform.gameObject;
                 }
             }
@@ -1881,8 +1817,7 @@ namespace StoryGenerator
 
         public void Initialize(Action action)
         {
-            if (!initialized)
-            {
+            if (!initialized) {
                 action();
                 initialized = true;
             }
@@ -1979,7 +1914,7 @@ namespace StoryGenerator
 
         private Dictionary<string, string> BuildPathMap(string resourceName)
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            Dictionary<string, string> result = new Dictionary<string, string> ();
             List<string> all_prefabs = new List<string>();
             TextAsset txtAsset = Resources.Load<TextAsset>(resourceName);
             var tmpAssetsMap = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(txtAsset.text);
@@ -2006,11 +1941,9 @@ namespace StoryGenerator
             Regex regex = new Regex(@"-{1,2}([^=]+)=([^=]+)");
             var result = new Dictionary<string, string>();
 
-            foreach (string s in args)
-            {
+            foreach (string s in args) {
                 Match match = regex.Match(s);
-                if (match.Success)
-                {
+                if (match.Success) {
                     result[match.Groups[1].Value.Trim()] = match.Groups[2].Value.Trim();
                 }
             }
