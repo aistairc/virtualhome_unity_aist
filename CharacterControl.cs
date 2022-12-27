@@ -282,6 +282,8 @@ namespace StoryGenerator
         const string ANIM_STR_SIT_WEIGHT = "SitWeight";
         const string ANIM_STR_HAND_WEIGHT = "HandWeight";
 
+        const string ANIM_STR_SITGO = "SitGo";
+
         #region UnityEventFunctions
         void Awake()
         {
@@ -1030,7 +1032,8 @@ namespace StoryGenerator
 
         public IEnumerator Type()
         {
-            m_ikTargets.SetWeightsSit(1.0f);
+            //m_ikTargets.SetWeightsSit(1.0f);
+            //m_animator.SetBool(ANIM_STR_SITGO, false);
             yield return SimpleAction("Type");
         }
 
@@ -1071,6 +1074,7 @@ namespace StoryGenerator
 
         public IEnumerator Write()
         {
+            //m_animator.SetBool(ANIM_STR_SITGO, false);
             yield return SimpleAction("Write");
         }
 
@@ -1081,6 +1085,9 @@ namespace StoryGenerator
 
         public IEnumerator FallSit()
         {
+            //Debug.Log("SitGo = " + m_animator.GetBool(ANIM_STR_SITGO));
+            m_animator.SetBool(ANIM_STR_SITGO, true);
+            //Debug.Log("SitGo = " + m_animator.GetBool(ANIM_STR_SITGO));
             yield return SimpleAction("FallSit");
         }
 

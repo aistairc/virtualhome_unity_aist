@@ -78,11 +78,15 @@ namespace StoryGenerator.Recording
         //private Rect _rect;
         private RectTransform _rectTransformObject;
         private RectTransform _rectTransformCharacter;
+        private RectTransform _canvasTransform;
+
         //private Renderer _renderer;
         //private string _myStr;
         //private Rect _camViewPortRect;
         //private string _className;  // class name of graph node for visibility check
         //private int _id;            // id of graph node for visibility check
+
+
         // for json  serializ
         private VisibleObjectData _vod;
         //private VisibleObject _vo;
@@ -318,6 +322,18 @@ namespace StoryGenerator.Recording
             }
         }
 
+        void Awake()
+        {
+            /*
+            if (Application.isEditor == false)
+            {
+                Display[] d = Display.displays;
+                d[0].Activate(0, 0, 0);
+                d[0].SetParams(1680, 1080, 0, 0);
+            }
+            */
+        }
+
         // Add Oct/2022
         void OnValidate()
         {
@@ -378,6 +394,13 @@ namespace StoryGenerator.Recording
             
             _vod = new VisibleObjectData();
             //_vo = new VisibleObject();
+
+            ImageWidth = (int)rectWidth;
+            ImageHeight = (int)rectHeight;
+            Debug.Log("ImageWidth = " + ImageWidth + "  ImageHeight = " + ImageHeight + " at Start");
+            _canvasTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();
+
+            Debug.Log("width = " + _canvasTransform.position.x + " hight = " + _canvasTransform.position.y);
 
             _canObjectStateUpdate = false;
             _canGrabbedEdgeUpdata = false;
@@ -742,6 +765,7 @@ namespace StoryGenerator.Recording
             if (isCameraChanged && isOpticalFlow) {
                 isCameraChanged = false;
             }
+
         }
 
         public void CreateTextualGTs()
@@ -1197,7 +1221,8 @@ namespace StoryGenerator.Recording
             return vr;
         }
             
-            
+        
+        // check character location in 2D screen
         private VisibleRect GUI2Rect(Camera cam, GameObject target, bool human)
         {
             bool hasMesh = false;
@@ -1287,12 +1312,22 @@ namespace StoryGenerator.Recording
             float x1 = float.MaxValue, y1 = float.MaxValue, x2 = float.MinValue, y2 = float.MinValue;
             foreach (Vector3 vert in vertices)
             {
-                //Vector2 tmp = WorldToGUIPoint(cam, target.transform.TransformPoint(vert));
-                Vector2 tmp = cam.WorldToScreenPoint(target.transform.TransformPoint(vert));
-                if (tmp.x < x1) x1 = tmp.x;
-                if (tmp.x > x2) x2 = tmp.x;
-                if (tmp.y < y1) y1 = tmp.y;
-                if (tmp.y > y2) y2 = tmp.y;
+                //Vector2 localPoint = new Vector2(0.0f, 0.0f);
+                //RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasTransform, screenPoint, null, out localPoint);
+
+                //Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, vert);
+                
+                // this may work too
+                //Vector3 vpp = cam.WorldToViewportPoint(transform.TransformPoint(vert));
+                //Vector2 screenPoint = new Vector2(vpp.x * ImageWidth, vpp.y * ImageHeight);
+                
+                // at last, this is correct method for calc point in screen coordinate form world coordinate... Dec/2022
+                Vector3 screenPoint = cam.WorldToScreenPoint(target.transform.TransformPoint(vert));
+
+                if (screenPoint.x < x1) x1 = screenPoint.x;
+                if (screenPoint.x > x2) x2 = screenPoint.x;
+                if (screenPoint.y < y1) y1 = screenPoint.y;
+                if (screenPoint.y > y2) y2 = screenPoint.y;
             }
 
             VisibleRect vr = new VisibleRect();
@@ -1325,20 +1360,20 @@ namespace StoryGenerator.Recording
 
             float xMin = vr.rect.xMin;
             float yMin = vr.rect.yMin;
-            float widht = vr.rect.width;
+            float width = vr.rect.width;
             float height = vr.rect.height;
             bool bChange = false;
             if(vr.rect.xMin < 0.0f )
             {   
                 bChange = true;
                 xMin = _space;
-                widht = vr.rect.width + vr.rect.xMin;
+                width = vr.rect.width + vr.rect.xMin;
             }
 
             if(vr.rect.xMax > (float)ImageWidth)
             {       
                 bChange = true;
-                widht = (float)ImageWidth - xMin - _space;
+                width = (float)ImageWidth - xMin - _space;
             }
 
             if(vr.rect.yMin < 0.0f)
@@ -1358,7 +1393,7 @@ namespace StoryGenerator.Recording
 
             if(bChange == true)
             {
-                visRect.rect = new Rect(xMin, yMin, widht, height);
+                visRect.rect = new Rect(xMin, yMin, width, height);
                 //visRect.color = Color.green;
                 //visRect.vis = true;
             }
