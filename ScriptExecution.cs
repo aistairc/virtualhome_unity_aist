@@ -5470,7 +5470,7 @@ namespace StoryGenerator.Utilities
 
         private IEnumerator ExecuteStandup(State s)
         {
-            yield return new WaitForSeconds(0.5f);
+            //yield return new WaitForSeconds(0.5f);
             recorder.MarkActionStart(InteractionType.STANDUP, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.StandUp());
