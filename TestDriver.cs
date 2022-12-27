@@ -823,14 +823,12 @@ namespace StoryGenerator
                         {
                             //Debug.Log("str = " + str);
                             if(str.Contains("\"vis_check_object\""))
-                            {
-                                
+                            {  
                                 if(str.Contains("true"))
                                 {
                                     isVisObjectCheck = true;
-                                    Debug.Log(" i found vis object mark true !!!");
+                                    //Debug.Log(" i found vis object mark true !!!");
                                 }
-                                
                             }
 
                             if(str.Contains("\"out_graph\""))
@@ -838,7 +836,7 @@ namespace StoryGenerator
                                 if(str.Contains("true"))
                                 {
                                     isOutGraph = true;
-                                    Debug.Log(" i found out graph mark true !!!");
+                                    //Debug.Log(" i found out graph mark true !!!");
                                 }
                             }
 
@@ -846,7 +844,7 @@ namespace StoryGenerator
                             {
                                 if(str.Contains("true")){
                                     isVisCharacterCeck = true;
-                                    Debug.Log(" i found vis char mark ture !!!");
+                                    //Debug.Log(" i found vis char mark ture !!!");
                                 }
                             }
 
@@ -855,9 +853,9 @@ namespace StoryGenerator
                             {
                                 int posStart = str.IndexOf(":") + 2;
                                 string strPerFrame = str.Substring(posStart, (str.Length -1) - posStart);
-                                Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
+                                //Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
                                 per_frame = int.Parse(Regex.Replace (str, @"[^0-9]", ""));
-                                Debug.Log("per_frame = " + per_frame);
+                                //Debug.Log("per_frame = " + per_frame);
                                 //str =  "per_frame": 3}
                             }
 
