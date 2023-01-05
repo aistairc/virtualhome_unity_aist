@@ -38,7 +38,7 @@ namespace StoryGenerator
 
 
         private const int DefaultPort = 8080;
-        private const int DefaultTimeout = 500000;
+        private const int DefaultTimeout = 3600000; // Edited to 1 hour (from 500000 to 3600000) 2022/12/08
 
 
         //static ProcessingController processingController;
@@ -817,49 +817,55 @@ namespace StoryGenerator
                         bool isVisObjectCheck = false;
                         bool isOutGraph = false;
                         bool isVisCharacterCeck = false;
-                        int per_frame = 0;
+                        bool isVisAllObjectCheck = false;
+                        int per_frame = 5;
                         foreach(string str in arguments)
                         {
                             //Debug.Log("str = " + str);
-                            if(str.Contains("vis_check_object"))
-                            {
-                                
+                            if(str.Contains("\"vis_check_object\""))
+                            {  
                                 if(str.Contains("true"))
                                 {
                                     isVisObjectCheck = true;
-                                    Debug.Log(" i found vis object mark true !!!");
+                                    //Debug.Log(" i found vis object mark true !!!");
                                 }
-                                
                             }
 
-                            if(str.Contains("out_graph"))
+                            if(str.Contains("\"out_graph\""))
                             {
                                 if(str.Contains("true"))
                                 {
                                     isOutGraph = true;
-                                    Debug.Log(" i found out graph mark true !!!");
+                                    //Debug.Log(" i found out graph mark true !!!");
                                 }
                             }
 
-                            if(str.Contains("vis_check_character"))
+                            if(str.Contains("\"vis_check_character\""))
                             {
                                 if(str.Contains("true")){
                                     isVisCharacterCeck = true;
-                                    Debug.Log(" i found vis char mark ture !!!");
+                                    //Debug.Log(" i found vis char mark ture !!!");
                                 }
                             }
 
                             // Add Oct/2022
-                            if(str.Contains("per_frame"))
+                            if(str.Contains("\"per_frame\""))
                             {
                                 int posStart = str.IndexOf(":") + 2;
                                 string strPerFrame = str.Substring(posStart, (str.Length -1) - posStart);
-                                Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
+                                //Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
                                 per_frame = int.Parse(Regex.Replace (str, @"[^0-9]", ""));
-                                Debug.Log("per_frame = " + per_frame);
+                                //Debug.Log("per_frame = " + per_frame);
                                 //str =  "per_frame": 3}
                             }
 
+                            // Add Nov/2022
+                            if(str.Contains("\"vis_check_object_all\"")){
+                                if(str.Contains("true")){
+                                    isVisAllObjectCheck = true;
+                                }
+                            }
+                            
                         }
 
                         foreach(Recorder re in recorders)
@@ -867,6 +873,7 @@ namespace StoryGenerator
                             re._calcRect = isVisObjectCheck;
                             re._calcRectChar = isVisCharacterCeck;
                             re._per_frame = per_frame;
+                            re._calcRectALL = isVisAllObjectCheck;
                         }
 
                         if (currentGraph != null)

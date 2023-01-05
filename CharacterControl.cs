@@ -268,7 +268,7 @@ namespace StoryGenerator
         const float BLENDING_TURN_MULTIPLIER = 0.6f;
         const float TURN_AMOUNT_MULTIPLIER = 1.25f;
         const float DISTANCE_DIFF_BLEND_ACTION_RANGE = 0.25f;
-        const float MIN_TURN_AMOUNT = 0.025f;
+        const float MIN_TURN_AMOUNT = 0.025f;// Default 0.025f
         const float ALMOST_TOUCHING = 0.95f;
 
         const float MIN_DISPLACEMENT = 3.0f;
@@ -282,6 +282,8 @@ namespace StoryGenerator
         const string ANIM_STR_SIT_WEIGHT = "SitWeight";
         const string ANIM_STR_HAND_WEIGHT = "HandWeight";
 
+        const string ANIM_STR_SITGO = "SitGo";
+
         #region UnityEventFunctions
         void Awake()
         {
@@ -289,6 +291,7 @@ namespace StoryGenerator
             m_animator = GetComponent<Animator>();
             m_rb = GetComponent<Rigidbody> ();
             m_nma = GetComponent<NavMeshAgent>();
+            m_nma.radius = 0.2f;    // ? proparty of radius is not radius of agent,  it is avoidance radius for the agent ...
             m_is = GetComponent<InteractionSystem> ();
 
             m_is.speed = animSpeedMultiplier;
@@ -401,6 +404,8 @@ namespace StoryGenerator
         // targetObject: IK target of body
         public IEnumerator Sit(GameObject go, GameObject objToInteract, GameObject targetObject, bool perform_animation = false)
         {
+            //Debug.Log("Char Sit " + "   GO Name = " + go.name + "  objectToInteract = " + objToInteract.name +
+            //        "  targetObject = " + targetObject + "   perform anim = " + perform_animation);
             if (objToInteract == null || targetObject == null) {
                 Debug.LogError("Null objectToInteract or targetObject in Sit" + go.name);
                 yield break;
@@ -410,6 +415,7 @@ namespace StoryGenerator
             
             m_animator.SetBool(ANIM_STR_SIT, true);
             //yield return SimpleAction(ANIM_STR_SIT);  not worked...
+            //Debug.Log("Char Sit " + "   targetObject = " + targetObject.transform.name); 
             m_ikTargets.ActionSit(targetObject.transform);
             onLateUpdate += AdjustSittingAnim;
             // NavMeshAgent has to be disabled during sitting because it will interfere
@@ -519,10 +525,14 @@ namespace StoryGenerator
 
         public IEnumerator walkOrRunTo(bool isWalk, Vector3 pos, Vector3? lookAt = null, bool shouldCheckPath = true)
         {
-            if (shouldCheckPath)
+            Debug.Log("Agent Radius = " + m_nma.radius.ToString());
+            Debug.Log("Agent Height = " + m_nma.height.ToString());
+            if (shouldCheckPath)    // never called ...
             {
                 NavMeshPath path = new NavMeshPath();
                 m_nma.CalculatePath(pos, path);
+                Debug.Log("path status = " + path.ToString());
+                Debug.Log("m_nma status = " + m_nma.pathStatus.ToString());
                 if (path.status != NavMeshPathStatus.PathComplete)
                 {
                     Debug.LogError($"Character cannot reach the destination {pos}");
@@ -554,6 +564,7 @@ namespace StoryGenerator
                 m_nma.speed += Random.Range(-0.15f, 0.1f);
             }
 
+            // use SetDestination method .....
             m_nma.isStopped = false;
             m_nma.SetDestination(pos);// <-------------------------- set destnation here !!!
 
@@ -562,6 +573,7 @@ namespace StoryGenerator
                 yield return null;
             }
 
+            Debug.Log(m_nma.pathStatus.ToString());
             Debug.Assert(m_nma.pathStatus == NavMeshPathStatus.PathComplete, "Path is not complete");
             float init_dist = m_nma.remainingDistance;
             float total_displacement = init_dist - m_nma.remainingDistance;
@@ -620,6 +632,7 @@ namespace StoryGenerator
 
             if (m_pos_lookAt == null)
             {
+                Debug.Log("m_pos_lookAt == null");
                 while ( canContinue(m_rb.velocity.magnitude > VELOCITY_STOP_TOLERANCE_WALK_N_RUN) )
                 {
                     float timeDampValue = TIMEDAMP_MOVE;
@@ -636,6 +649,7 @@ namespace StoryGenerator
             }
             else
             {
+                Debug.Log("m_pos_lookAt != null");
                 m_nma.isStopped = true;
 
                 for ( float turnAmount = CalculateTurnAmount(false);
@@ -645,6 +659,7 @@ namespace StoryGenerator
                     m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
                     //Debug.Log("Start turn in character control at lookat != null");
                     m_animator.SetFloat(ANIM_STR_TURN, turnAmount, TIMEDAMP_MOVE, Time.deltaTime);
+                    Debug.Log("SetFloat ANIM_STR_TURN");
                     yield return null;
                 }
 
@@ -656,6 +671,12 @@ namespace StoryGenerator
             //m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f);
             //
             //m_animator.SetFloat(ANIM_STR_TURN, 0.0f);
+
+
+            // but revert... Dec/2022
+            m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f);
+            m_animator.SetFloat(ANIM_STR_TURN, 0.0f);
+            
             m_nma.isStopped = true;
         }
 
@@ -913,22 +934,7 @@ namespace StoryGenerator
 
         public IEnumerator Kneel()
         {
-            
             yield return SimpleAction("Kneel");
-           
-            /*
-            while(m_animator.GetFloat(ANIM_STR_FORWARD) > -5.9f)
-            {
-                m_animator.SetFloat(ANIM_STR_FORWARD, -6.0f, 1.0f, Time.deltaTime);
-                m_animator.SetFloat(ANIM_STR_TURN, 0.0f, 1.0f, Time.deltaTime);
-
-
-                yield return null;
-
-            }
-            */
-
-            
         }
 
         public IEnumerator LiftLeft()
@@ -1026,6 +1032,8 @@ namespace StoryGenerator
 
         public IEnumerator Type()
         {
+            //m_ikTargets.SetWeightsSit(1.0f);
+            //m_animator.SetBool(ANIM_STR_SITGO, false);
             yield return SimpleAction("Type");
         }
 
@@ -1066,32 +1074,21 @@ namespace StoryGenerator
 
         public IEnumerator Write()
         {
+            //m_animator.SetBool(ANIM_STR_SITGO, false);
             yield return SimpleAction("Write");
         }
 
         public IEnumerator Fall()
         {
-            /*
-            while(m_animator.GetFloat(ANIM_STR_FORWARD) > -3.48f)
-            {
-                m_animator.SetFloat(ANIM_STR_FORWARD, -3.5f, 0.5f, Time.deltaTime);
-                m_animator.SetFloat(ANIM_STR_TURN, 5.0f, 0.5f, Time.deltaTime);
-
-                yield return null;
-
-            }
-            */
-
             yield return SimpleAction("Fall");
         }
 
         public IEnumerator FallSit()
         {
-            //m_animator.SetFloat(ANIM_STR_FORWARD, -5.5f);
-            //m_animator.SetFloat(ANIM_STR_TURN, 1.0f);
-            
+            //Debug.Log("SitGo = " + m_animator.GetBool(ANIM_STR_SITGO));
+            m_animator.SetBool(ANIM_STR_SITGO, true);
+            //Debug.Log("SitGo = " + m_animator.GetBool(ANIM_STR_SITGO));
             yield return SimpleAction("FallSit");
-            //Debug.Log("FallSit  Forward = " + m_animator.GetFloat("Forward") + "   Turn = " + m_animator.GetFloat("Turn"));
         }
 
         public IEnumerator FallFrom()
@@ -1523,6 +1520,7 @@ namespace StoryGenerator
         void AdjustSittingAnim()
         {
             float sitWeight = m_animator.GetFloat(ANIM_STR_SIT_WEIGHT);
+            //Debug.Log("Sit Weight First = " + sitWeight);
             // If sitWeight has been previously increased, and now it has
             // reached zero, that means this late update delegate is no
             // longer needed.
@@ -1535,9 +1533,8 @@ namespace StoryGenerator
             {
                 m_anm_isCharSittingDown = true;
             }
+            //Debug.Log("Sit Weight Second = " + sitWeight);
             m_ikTargets.SetWeightsSit(sitWeight);
-            //m_animator.SetFloat(ANIM_STR_FORWARD, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
-            //m_animator.SetFloat(ANIM_STR_TURN, 0.0f, TIMEDAMP_MOVE, Time.deltaTime);
         }
 
         // Used for simple animation where setting bool value on animator and

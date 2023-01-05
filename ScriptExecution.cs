@@ -2285,7 +2285,7 @@ namespace StoryGenerator.Utilities
                         s.AddScriptGameObject(a.Name, go, goPos, pos);
                         if (this.find_solution)
                             s.RemoveObject("ROOM_CONSTRAINT");
-                        s.AddActionFlag("GOTO_TURN"); // <========================= Any way you add "GOTO_TURN"
+                            s.AddActionFlag("GOTO_TURN"); // <========================= Any way you add "GOTO_TURN"
                         if (current.GetString("CHARACTER_STATE") == "SITTING")
                         {
                             s.RemoveObject("CHARACTER_STATE");
@@ -2308,7 +2308,7 @@ namespace StoryGenerator.Utilities
                             s.AddScriptGameObject(a.Name, go, goPos, pos);
                             if (this.find_solution)
                                 s.RemoveObject("ROOM_CONSTRAINT");
-                            s.AddActionFlag("GOTO_TURN");// <========================= Any way you add "GOTO_TURN"
+                                s.AddActionFlag("GOTO_TURN");// <========================= Any way you add "GOTO_TURN"
                             if (current.GetString("CHARACTER_STATE") == "SITTING")
                             {
                                 s.RemoveObject("CHARACTER_STATE");
@@ -4373,7 +4373,7 @@ namespace StoryGenerator.Utilities
         private IEnumerable<IStateGroup> ProcessSleep(FallFromAction a, State current)
         {
 
-            Debug.Log("ProcessClimb... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
+            Debug.Log("ProcessSleep... CHARACTER_STATE = " + (string)current.GetObject("CHARACTER_STATE"));
             /*
             if ((string)current.GetObject("CHARACTER_STATE") == "ONOBJECT")
             {
@@ -5470,7 +5470,7 @@ namespace StoryGenerator.Utilities
 
         private IEnumerator ExecuteStandup(State s)
         {
-            yield return new WaitForSeconds(0.5f);
+            //yield return new WaitForSeconds(0.5f);
             recorder.MarkActionStart(InteractionType.STANDUP, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.StandUp());
@@ -5796,7 +5796,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.BRUSH, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.BrushLeft();
@@ -5810,7 +5810,7 @@ namespace StoryGenerator.Utilities
                         cameraControls[cam_id].ClearVisibleArea();
             }
         }
-
+        
         private IEnumerator ExecuteCut(State s)
         {
             // check target visible or not
@@ -5824,7 +5824,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.CUT, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.CutLeft();
@@ -5851,7 +5851,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.EAT, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.EatLeft();
@@ -5925,7 +5925,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.LIFT, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.LiftLeft();
@@ -5979,7 +5979,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.RINSE, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.RinseLeft();
@@ -6015,7 +6015,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SQUEEZE, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SqueezeLeft();
@@ -6051,7 +6051,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SWEEP, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SweepLeft();
@@ -6095,7 +6095,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.STIR, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.StirLeft();
@@ -6122,7 +6122,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.THROW, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.ThrowLeft();
@@ -6212,7 +6212,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.WRAP, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.WrapLeft();
@@ -6249,7 +6249,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute FallSit...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FALL, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.FALLSIT, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.FallSit());
         }
@@ -6258,7 +6258,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute FallTable...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FALL, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.FALLFROM, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.FallFrom());
         }
@@ -6347,7 +6347,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SCRUB, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.ScrubLeft();
@@ -6382,7 +6382,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SHAKE, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.ShakeLeft();
@@ -6409,7 +6409,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SMELL, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SmellLeft();
@@ -6436,7 +6436,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SOAK, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.SoakLeft();
@@ -6463,7 +6463,7 @@ namespace StoryGenerator.Utilities
                     if (cameraControls[cam_id] != null)
                         cameraControls[cam_id].SetVisibleArea(characterControl.UpperPartArea());
             }
-            recorder.MarkActionStart(InteractionType.WIPE, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.POUR, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             if (intHand == FullBodyBipedEffector.LeftHand)
                 yield return characterControl.PourLeft();
@@ -6484,7 +6484,7 @@ namespace StoryGenerator.Utilities
             SetTargetObject2Recorder(s.Action.Name.Name, s.Action.Name.Instance);
             Debug.Log("Execute Climb...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.CLIMB, s.Action.ScriptLine);
             Debug.Log("Should Prepare NavMesh !!!!!");
             //UtilsAnnotator.ProcessHomeNoCoffeetable(_h, randomizeExecution);
             UtilsAnnotator.SetCoffeeTableObstacle(false);
@@ -6495,7 +6495,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute GoDown...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.GODOWN, s.Action.ScriptLine);
             //UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.GoDown());
         }
@@ -6504,7 +6504,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute LayDown...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.LAYDOWN, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.LayDown());
         }
@@ -6513,7 +6513,7 @@ namespace StoryGenerator.Utilities
         {
             Debug.Log("Execute Sleep...");
             //yield return new WaitForSeconds(0.5f);
-            recorder.MarkActionStart(InteractionType.FOLD, s.Action.ScriptLine);
+            recorder.MarkActionStart(InteractionType.SLEEP, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartCoroutine(characterControl.Sleep());
         }
@@ -6656,6 +6656,9 @@ namespace StoryGenerator.Utilities
             const int WIPE_MAX_NUMBER = 300;  // added 20220927. Set max number based on frame rate 30
             const int SCRUB_MAX_NUMBER = 350;  // added 20221006. Set max number based on frame rate 30
             const int CUT_MAX_NUMBER = 350;  // added 20221107. Set max number based on frame rate 30
+            const int STRETCH_MAX_NUMBER = 280;  // added 20221207. Set max number based on frame rate 30
+            const int STRADDLE_MAX_NUMBER = 260;  // added 20221207. Set max number based on frame rate 30
+            const int LEGOPP_MAX_NUMBER = 300;  // added 20221207. Set max number based on frame rate 30
             const int OTHER_MAX_NUMBER = 120;
 
             int result = 0;
@@ -6693,6 +6696,18 @@ namespace StoryGenerator.Utilities
                 else if (s.Action is CutAction)
                 {
                     result += CUT_MAX_NUMBER;  // added 20221107. Set max number based on frame rate 30
+                }
+                else if (s.Action is StretchAction)
+                {
+                    result += STRETCH_MAX_NUMBER;  // added 20221207. Set max number based on frame rate 30
+                }
+                else if (s.Action is StraddleAction)
+                {
+                    result += STRADDLE_MAX_NUMBER;  // added 20221207. Set max number based on frame rate 30
+                }
+                else if (s.Action is LegOppAction)
+                {
+                    result += LEGOPP_MAX_NUMBER;  // added 20221207. Set max number based on frame rate 30
                 }
                 else
                 {
