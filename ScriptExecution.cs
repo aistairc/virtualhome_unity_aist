@@ -5669,7 +5669,7 @@ namespace StoryGenerator.Utilities
             // check target visible or not 
             SetTargetObject2Recorder(ga.Name.Name, ga.Name.Instance);
             // change state of graph node 
-            recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
+            //recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
             Debug.Log("Hey, you switch on TV .....? Name = " + ga.Name.Name + "  Id = " + ga.Name.Instance);
             GameObject go = s.GetScriptGameObject(ga.Name);
 
@@ -5683,6 +5683,8 @@ namespace StoryGenerator.Utilities
                             cameraControls[cam_id].SetFocusObject(go);
                 }
                 recorder.MarkActionStart(ga.Off ? InteractionType.SWITCHOFF : InteractionType.SWITCHON, ga.ScriptLine);
+                // change state of graph node 
+                recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
                 UtilsAnnotator.SetCoffeeTableObstacle(true);
                 yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
                     hi.SwitchIndex(HandInteraction.ActivationAction.SwitchOn));
