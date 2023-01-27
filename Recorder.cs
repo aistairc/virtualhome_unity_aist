@@ -556,8 +556,10 @@ namespace StoryGenerator.Recording
                 _textTargetObject.color = Color.green;
                 _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
                 Debug.Log("Frame = " + frameNum + "  trasform name = " + _transform);
+                _canObjectStateUpdate = _canGrabbedEdgeUpdata = true;
                 UpDateGraphNodeState(); // update node state
                 UpDateGrabbedEdge();    // update edge sate
+                _canObjectStateUpdate = _canGrabbedEdgeUpdata = false;
 
                 List<EnvironmentObject> eoListInRoom = new List<EnvironmentObject>();
                 eoListInRoom = GetVisCheckGameObjectAll(cam);
@@ -742,8 +744,10 @@ namespace StoryGenerator.Recording
                     string filePathGraph = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_graph.json";
                     //UpdateCharacterOfGraph();
                     _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
+                    _canObjectStateUpdate = _canGrabbedEdgeUpdata = true;
                     UpDateGraphNodeState(); // update node state
                     UpDateGrabbedEdge();    // update edge sate
+                    _canObjectStateUpdate = _canGrabbedEdgeUpdata = false;
                     string jsonstringGraph = JsonConvert.SerializeObject(_currentGraph);
 
                     using(StreamWriter sw = new StreamWriter(filePathGraph, true, System.Text.Encoding.GetEncoding("UTF-8")))
@@ -998,7 +1002,7 @@ namespace StoryGenerator.Recording
         // Update node state of graph, I think it no needed anymore
         public void SetObjectStateOfGraph(string eoName, int eoId, Utilities.ObjectState os)
         {
-            Debug.Log("_eoName = " + eoName);
+            Debug.Log("_eoName = " + eoName + "  state = " + os);
             _eoName = eoName;
             _eoId = eoId;
             _os = os;
@@ -1059,7 +1063,11 @@ namespace StoryGenerator.Recording
                         eo.states.Clear();
                         eo.states.Add(_os);
                         Debug.Log(" I set object state as " + _os.ToString() + " At Frame No = " + frameNum);
-                        _canObjectStateUpdate = false;
+
+                        // clear 
+                        _eoName = "";
+                        _eoId = -20000;
+                        //_canObjectStateUpdate = false;
                         break;
                     
                     }

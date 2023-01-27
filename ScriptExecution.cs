@@ -5684,7 +5684,7 @@ namespace StoryGenerator.Utilities
                 }
                 recorder.MarkActionStart(ga.Off ? InteractionType.SWITCHOFF : InteractionType.SWITCHON, ga.ScriptLine);
                 // change state of graph node 
-                recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
+                recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, ga.Off ? Utilities.ObjectState.OFF : Utilities.ObjectState.ON);
                 UtilsAnnotator.SetCoffeeTableObstacle(true);
                 yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
                     hi.SwitchIndex(HandInteraction.ActivationAction.SwitchOn));
