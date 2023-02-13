@@ -1829,7 +1829,7 @@ namespace StoryGenerator
         public bool find_solution = true;
         public bool randomize_execution = false;
         public int random_seed = -1;
-        public int processing_time_limit = 10;
+        public int processing_time_limit = 10;  // define time for simulation
         public bool recording = false;
         public bool skip_execution = false;
         public bool skip_animation = false;
