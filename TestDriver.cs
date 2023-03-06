@@ -38,7 +38,7 @@ namespace StoryGenerator
 
 
         private const int DefaultPort = 8080;
-        private const int DefaultTimeout = 3600000; // Edited to 1 hour (from 500000 to 3600000) 2022/12/08
+        private const int DefaultTimeout = 10800000; // Edited to 3 hour (from 500000 to 10800000) 2023/02/28
 
 
         //static ProcessingController processingController;
