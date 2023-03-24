@@ -5906,12 +5906,15 @@ namespace StoryGenerator.Utilities
             // Added not to slip avatar away while on the table 2023/03/22
             IEnumerable<GameObject> goList = s.GetScriptGameObjects();
             Transform navCoffeeTable = null;
-            foreach (GameObject go in goList)
+            if (goList != null)
             {
-                if (go.name.Contains("Coffee_table"))
+                foreach (GameObject go in goList)
                 {
-                    navCoffeeTable = go.transform.Find("Coffee_T_Nav");
-                    navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = false;
+                    if (go.name.Contains("Coffee_table"))
+                    {
+                        navCoffeeTable = go.transform.Find("Coffee_T_Nav");
+                        navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = false;
+                    }
                 }
             }
             yield return characterControl.StartCoroutine(characterControl.JumpDown());
