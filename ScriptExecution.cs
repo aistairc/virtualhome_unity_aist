@@ -5903,7 +5903,22 @@ namespace StoryGenerator.Utilities
             //yield return new WaitForSeconds(0.5f);
             recorder.MarkActionStart(InteractionType.JUMPDOWN, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
+            // Added not to slip avatar away while on the table 2023/03/22
+            IEnumerable<GameObject> goList = s.GetScriptGameObjects();
+            Transform navCoffeeTable = null;
+            foreach (GameObject go in goList)
+            {
+                if (go.name.Contains("Coffee_table"))
+                {
+                    navCoffeeTable = go.transform.Find("Coffee_T_Nav");
+                    navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = false;
+                }
+            }
             yield return characterControl.StartCoroutine(characterControl.JumpDown());
+            if (navCoffeeTable != null)
+            {
+                navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = true;
+            }
         }
 
         private IEnumerator ExecuteKneel(State s)
