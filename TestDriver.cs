@@ -38,7 +38,7 @@ namespace StoryGenerator
 
 
         private const int DefaultPort = 8080;
-        private const int DefaultTimeout = 3600000; // Edited to 1 hour (from 500000 to 3600000) 2022/12/08
+        private const int DefaultTimeout = 10800000; // Edited to 3 hour (from 500000 to 10800000) 2023/02/28
 
 
         //static ProcessingController processingController;
@@ -721,9 +721,13 @@ namespace StoryGenerator
                         continue;
                     }
 
-                    Debug.Log("ExecutionConfig = " + networkRequest.stringParams[0]);
+                    //Debug.Log("ExecutionConfig = " + networkRequest.stringParams[0]);
                     ExecutionConfig config = JsonConvert.DeserializeObject<ExecutionConfig>(networkRequest.stringParams[0]);
-
+                    /*
+                    Debug.Log("check object = " + config.vis_check_object + "   check character = " + config.vis_check_character + 
+                            "   check all = " + config.vis_check_object_all + "   per frame = " + config.per_frame +
+                            "   out graph = " + config.out_graph);
+                    */
 
                     if (config.randomize_execution) {
                         InitRandom(config.random_seed);
@@ -802,80 +806,12 @@ namespace StoryGenerator
                     {
                         List<string> scriptLines = networkRequest.stringParams.ToList();
                         // Add for checking script output
+                        /*
                         for(int i = 0; i < scriptLines.Count; i++)
                         {
                             Debug.Log("ScriptList " + i + " = " + scriptLines[i]);
                         }
-
-                        //
-                        // Set up camera for checking objects, character, and outputing graph each frame...
-                        // Add 2022 for AIST
-                        // 
-                        //
-                        string line0 = scriptLines[0];
-                        string[] arguments = line0.Split(',');
-                        bool isVisObjectCheck = false;
-                        bool isOutGraph = false;
-                        bool isVisCharacterCeck = false;
-                        bool isVisAllObjectCheck = false;
-                        int per_frame = 5;
-                        foreach(string str in arguments)
-                        {
-                            //Debug.Log("str = " + str);
-                            if(str.Contains("\"vis_check_object\""))
-                            {  
-                                if(str.Contains("true"))
-                                {
-                                    isVisObjectCheck = true;
-                                    //Debug.Log(" i found vis object mark true !!!");
-                                }
-                            }
-
-                            if(str.Contains("\"out_graph\""))
-                            {
-                                if(str.Contains("true"))
-                                {
-                                    isOutGraph = true;
-                                    //Debug.Log(" i found out graph mark true !!!");
-                                }
-                            }
-
-                            if(str.Contains("\"vis_check_character\""))
-                            {
-                                if(str.Contains("true")){
-                                    isVisCharacterCeck = true;
-                                    //Debug.Log(" i found vis char mark ture !!!");
-                                }
-                            }
-
-                            // Add Oct/2022
-                            if(str.Contains("\"per_frame\""))
-                            {
-                                int posStart = str.IndexOf(":") + 2;
-                                string strPerFrame = str.Substring(posStart, (str.Length -1) - posStart);
-                                //Debug.Log("posStart = " + posStart + "  Length = " + str.Length + "  per_frame = " + strPerFrame);
-                                per_frame = int.Parse(Regex.Replace (str, @"[^0-9]", ""));
-                                //Debug.Log("per_frame = " + per_frame);
-                                //str =  "per_frame": 3}
-                            }
-
-                            // Add Nov/2022
-                            if(str.Contains("\"vis_check_object_all\"")){
-                                if(str.Contains("true")){
-                                    isVisAllObjectCheck = true;
-                                }
-                            }
-                            
-                        }
-
-                        foreach(Recorder re in recorders)
-                        {
-                            re._calcRect = isVisObjectCheck;
-                            re._calcRectChar = isVisCharacterCeck;
-                            re._per_frame = per_frame;
-                            re._calcRectALL = isVisAllObjectCheck;
-                        }
-
+                        */
                         if (currentGraph != null)
                         {
                             Debug.Log(" I have EnvironmentGraph !!!!");
@@ -888,7 +824,7 @@ namespace StoryGenerator
                             // outputing graph
                             foreach(Recorder re in recorders)
                             {
-                                re._outGraph = isOutGraph;
+                                //re._outGraph = isOutGraph;
                                 //re.SetEnvironmentGraph(currentGraph);
                                 re.SetTransfrom(transform); // first  !!!
                                 re.SetEnvironmentGraphCreator(currentGraphCreator); // second !!!
@@ -1498,6 +1434,16 @@ namespace StoryGenerator
             rec.ImageWidth = config.image_width;
             rec.ImageHeight = config.image_height;
             rec.OutputDirectory = outDir;
+
+            // Add 25.Dec.2022
+            rec._calcRect = config.vis_check_object;
+            rec._calcRectChar = config.vis_check_character;
+            rec._per_frame = config.per_frame;
+            rec._calcRectALL = config.vis_check_object_all;
+            rec._outGraph = config.out_graph;
+            //rec.SetTransfrom(transform); // first  !!!
+            //rec.SetEnvironmentGraphCreator(currentGraphCreator); // second !!!
+
         }
 
         private void createRecorder(ExecutionConfig config, string outDir, int index)
@@ -1838,6 +1784,11 @@ namespace StoryGenerator
         public bool randomize_recording = false;
         public int image_width = 640;
         public int image_height = 480;
+        public bool vis_check_object = false;       // add 26.Dec.2022
+        public bool vis_check_character = false;     // add 26.Dec.2022
+        public bool vis_check_object_all = false;   // add 26.Dec.2022
+        public bool out_graph = false;              // add 26.Dec.2022
+        public int per_frame = 11;                  // add 26.Dec.2022
         public List<string> camera_mode = new List<string>();
     }
 
@@ -1878,7 +1829,7 @@ namespace StoryGenerator
         public bool find_solution = true;
         public bool randomize_execution = false;
         public int random_seed = -1;
-        public int processing_time_limit = 10;
+        public int processing_time_limit = 10;  // define time for simulation
         public bool recording = false;
         public bool skip_execution = false;
         public bool skip_animation = false;

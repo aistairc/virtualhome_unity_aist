@@ -100,6 +100,9 @@ namespace StoryGenerator.Recording
         private bool _canGrabbedEdgeUpdata;
         //private GameObject _grrabbedGO;
         private String _HandGrabbed;
+
+        // Add Feb/2023 check graphjson already out or not 
+        private bool _isGraphJsonOut;
        
         // do not use globals :(
         //private List<GameObject> _tagetGOChar = new List<GameObject>();
@@ -404,6 +407,8 @@ namespace StoryGenerator.Recording
 
             _canObjectStateUpdate = false;
             _canGrabbedEdgeUpdata = false;
+
+            _isGraphJsonOut = false;
         }
 
         // ======================================================================================== //
@@ -469,6 +474,7 @@ namespace StoryGenerator.Recording
         // https://forum.unity.com/threads/yield-return-waitendofframe-will-wait-until-end-of-the-same-frame-or-the-next-frame.282213/
         System.Collections.IEnumerator OnEndOfFrame(string pathPrefix)
         {
+
             if (CamCtrls.Count > 0)
             {
                 for (int i = 0; i < INITIAL_FRAME_SKIP; i++)
@@ -486,6 +492,8 @@ namespace StoryGenerator.Recording
             while (recording && currentframeNum <= MaxFrameNumber) {
                 yield return new WaitForEndOfFrame();
 
+                 _isGraphJsonOut = false;
+                 
                 if (recording) {
                     for (int cam_id = 0; cam_id < CamCtrls.Count; cam_id++)
                     {
@@ -556,8 +564,10 @@ namespace StoryGenerator.Recording
                 _textTargetObject.color = Color.green;
                 _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
                 Debug.Log("Frame = " + frameNum + "  trasform name = " + _transform);
+                _canObjectStateUpdate = _canGrabbedEdgeUpdata = true;
                 UpDateGraphNodeState(); // update node state
                 UpDateGrabbedEdge();    // update edge sate
+                _canObjectStateUpdate = _canGrabbedEdgeUpdata = false;
 
                 List<EnvironmentObject> eoListInRoom = new List<EnvironmentObject>();
                 eoListInRoom = GetVisCheckGameObjectAll(cam);
@@ -737,27 +747,36 @@ namespace StoryGenerator.Recording
             // Add 2022 out put grap per frame...
             if(_outGraph == true)
             {
-                if( (frameNum % _per_frame) == 0)
+                if(_isGraphJsonOut == false) // not out put graph.json yet
                 {
-                    string filePathGraph = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_graph.json";
-                    //UpdateCharacterOfGraph();
-                    _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
-                    UpDateGraphNodeState(); // update node state
-                    UpDateGrabbedEdge();    // update edge sate
-                    string jsonstringGraph = JsonConvert.SerializeObject(_currentGraph);
-
-                    using(StreamWriter sw = new StreamWriter(filePathGraph, true, System.Text.Encoding.GetEncoding("UTF-8")))
+                    if( (frameNum % _per_frame) == 0)
                     {
-                        try
+                        string filePathGraph = string.Format("{0}{1:D4}_{2}", pathPrefix, frameNum, cam_id) + "_graph.json";
+                        //UpdateCharacterOfGraph();
+                        _currentGraph = _currentGraphCreator.UpdateGraph(_transform);
+                        _canObjectStateUpdate = _canGrabbedEdgeUpdata = true;
+                        UpDateGraphNodeState(); // update node state
+                        UpDateGrabbedEdge();    // update edge sate
+                        _canObjectStateUpdate = _canGrabbedEdgeUpdata = false;
+                        string jsonstringGraph = JsonConvert.SerializeObject(_currentGraph);
+
+                        using(StreamWriter sw = new StreamWriter(filePathGraph, false , System.Text.Encoding.GetEncoding("UTF-8"))) // change for over write
                         {
-                            sw.Write(jsonstringGraph);
-                        }
-                        catch(Exception e)
-                        {
-                            Debug.Log(e);
+                            try
+                            {
+                                sw.Write(jsonstringGraph);
+                            }
+                            catch(Exception e)
+                            {
+                                Debug.Log(e);
+                            }
+
+                            _isGraphJsonOut = true;
+                            Debug.Log(" I out graph json  " + " frame Num = " + frameNum);
                         }
                     }
                 }
+                
             }
 
             // Reset the value - check if current check is on optical flow
@@ -998,7 +1017,7 @@ namespace StoryGenerator.Recording
         // Update node state of graph, I think it no needed anymore
         public void SetObjectStateOfGraph(string eoName, int eoId, Utilities.ObjectState os)
         {
-            Debug.Log("_eoName = " + eoName);
+            Debug.Log("_eoName = " + eoName + "  state = " + os);
             _eoName = eoName;
             _eoId = eoId;
             _os = os;
@@ -1059,7 +1078,11 @@ namespace StoryGenerator.Recording
                         eo.states.Clear();
                         eo.states.Add(_os);
                         Debug.Log(" I set object state as " + _os.ToString() + " At Frame No = " + frameNum);
-                        _canObjectStateUpdate = false;
+
+                        // clear 
+                        _eoName = "";
+                        _eoId = -20000;
+                        //_canObjectStateUpdate = false;
                         break;
                     
                     }

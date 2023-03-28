@@ -5669,7 +5669,7 @@ namespace StoryGenerator.Utilities
             // check target visible or not 
             SetTargetObject2Recorder(ga.Name.Name, ga.Name.Instance);
             // change state of graph node 
-            recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
+            //recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, Utilities.ObjectState.ON);
             Debug.Log("Hey, you switch on TV .....? Name = " + ga.Name.Name + "  Id = " + ga.Name.Instance);
             GameObject go = s.GetScriptGameObject(ga.Name);
 
@@ -5683,6 +5683,8 @@ namespace StoryGenerator.Utilities
                             cameraControls[cam_id].SetFocusObject(go);
                 }
                 recorder.MarkActionStart(ga.Off ? InteractionType.SWITCHOFF : InteractionType.SWITCHON, ga.ScriptLine);
+                // change state of graph node 
+                recorder.SetObjectStateOfGraph(ga.Name.Name, ga.Name.Instance, ga.Off ? Utilities.ObjectState.OFF : Utilities.ObjectState.ON);
                 UtilsAnnotator.SetCoffeeTableObstacle(true);
                 yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"),
                     hi.SwitchIndex(HandInteraction.ActivationAction.SwitchOn));
@@ -5901,7 +5903,25 @@ namespace StoryGenerator.Utilities
             //yield return new WaitForSeconds(0.5f);
             recorder.MarkActionStart(InteractionType.JUMPDOWN, s.Action.ScriptLine);
             UtilsAnnotator.SetCoffeeTableObstacle(true);
+            // Added not to slip avatar away while on the table 2023/03/22
+            IEnumerable<GameObject> goList = s.GetScriptGameObjects();
+            Transform navCoffeeTable = null;
+            if (goList != null)
+            {
+                foreach (GameObject go in goList)
+                {
+                    if (go.name.Contains("Coffee_table"))
+                    {
+                        navCoffeeTable = go.transform.Find("Coffee_T_Nav");
+                        navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = false;
+                    }
+                }
+            }
             yield return characterControl.StartCoroutine(characterControl.JumpDown());
+            if (navCoffeeTable != null)
+            {
+                navCoffeeTable.GetComponent<NavMeshObstacle>().enabled = true;
+            }
         }
 
         private IEnumerator ExecuteKneel(State s)
