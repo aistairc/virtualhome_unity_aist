@@ -1399,6 +1399,19 @@ namespace StoryGenerator
                                     cameraControl = autoCameraControl;
                                     cam_ctrl = true;
                                 }
+                                else if (config.camera_mode[cam_id] == "SPECIFIED")
+                                {
+                                    List<Camera> specifiedCameraList = new List<Camera>();
+                                    foreach (int index in config.specified_cameras)
+                                    {
+                                        specifiedCameraList.Add(cameras[index]);
+                                    }
+                                    AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
+                                    autoCameraControl.RandomizeCameras = config.randomize_execution;
+                                    autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
+                                    cameraControl = autoCameraControl;
+                                    cam_ctrl = true;
+                                }
                                 else
                                 {
 
@@ -1833,6 +1846,7 @@ namespace StoryGenerator
         public bool recording = false;
         public bool skip_execution = false;
         public bool skip_animation = false;
+        public List<int> specified_cameras = new List<int>();
     }
 
     public class DataProviders
