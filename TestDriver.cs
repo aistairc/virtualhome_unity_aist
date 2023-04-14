@@ -1399,19 +1399,6 @@ namespace StoryGenerator
                                     cameraControl = autoCameraControl;
                                     cam_ctrl = true;
                                 }
-                                else if (config.camera_mode[cam_id] == "SPECIFIED")
-                                {
-                                    List<Camera> specifiedCameraList = new List<Camera>();
-                                    foreach (int index in config.specified_cameras)
-                                    {
-                                        specifiedCameraList.Add(cameras[index]);
-                                    }
-                                    AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
-                                    autoCameraControl.RandomizeCameras = config.randomize_execution;
-                                    autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
-                                    cameraControl = autoCameraControl;
-                                    cam_ctrl = true;
-                                }
                                 else
                                 {
 
@@ -1419,6 +1406,24 @@ namespace StoryGenerator
                                     {
                                         cameraControl = CreateFixedCameraControl(chc.gameObject, CameraExpander.char_cams[config.camera_mode[cam_id]].name, false);
                                         cam_ctrl = true;
+                                    }
+                                    else
+                                    {
+                                        // Add new camera mode 2023/04/05
+                                        if (config.camera_mode[cam_id] == "SPECIFIED")
+                                        {
+                                            // This is same functionality with AUTO mode except this mode can specify which cameras only to use.
+                                            List<Camera> specifiedCameraList = new List<Camera>();
+                                            foreach (int index in config.specified_cameras)
+                                            {
+                                                specifiedCameraList.Add(cameras[index]);
+                                            }
+                                            AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
+                                            autoCameraControl.RandomizeCameras = config.randomize_execution;
+                                            autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
+                                            cameraControl = autoCameraControl;
+                                            cam_ctrl = true;
+                                        }
                                     }
                                 }
                             }
