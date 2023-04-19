@@ -5507,7 +5507,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].SetFocusArea(goBounds);
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].SetFocusArea(goBounds);
             }
 
             if (pd == null)
@@ -5561,7 +5562,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].ClearFocusArea();
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].ClearFocusArea();
             }
         }
 
@@ -5587,7 +5589,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].SetFocusObject(go);
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].SetFocusObject(go);
             }
             //if (smooth_walk){
             UtilsAnnotator.SetCoffeeTableObstacle(true);
@@ -5680,7 +5683,8 @@ namespace StoryGenerator.Utilities
                 {
                     for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                         if (cameraControls[cam_id] != null)
-                            cameraControls[cam_id].SetFocusObject(go);
+                            if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                                cameraControls[cam_id].SetFocusObject(go);
                 }
                 recorder.MarkActionStart(ga.Off ? InteractionType.SWITCHOFF : InteractionType.SWITCHON, ga.ScriptLine);
                 // change state of graph node 
@@ -5693,7 +5697,8 @@ namespace StoryGenerator.Utilities
                 {
                     for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                         if (cameraControls[cam_id] != null)
-                            cameraControls[cam_id].ClearFocusObject();
+                            if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                                cameraControls[cam_id].ClearFocusObject();
                 }
             }
         }
@@ -5725,7 +5730,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].SetFocusObject(go, new Bounds(putPosition, focusBounds.size));
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].SetFocusObject(go, new Bounds(putPosition, focusBounds.size));
             }
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.GrabObject(goi, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"));
@@ -5768,7 +5774,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].SetFocusObject(go);
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].SetFocusObject(go);
             }
             UtilsAnnotator.SetCoffeeTableObstacle(true);
             yield return characterControl.StartInteraction(go, (FullBodyBipedEffector)s.GetObject("INTERACTION_HAND"));
@@ -5776,7 +5783,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].ClearFocusObject();
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].ClearFocusObject();
             }
         }
 
@@ -6555,7 +6563,8 @@ namespace StoryGenerator.Utilities
             {
                 for (int cam_id = 0; cam_id < cameraControls.Count; cam_id++)
                     if (cameraControls[cam_id] != null)
-                        cameraControls[cam_id].ClearFocusObject();
+                        if (!cameraControls[cam_id].CurrentCamera.ToString().Contains("New_Camera")) // Added to disable focusing object only for FIXED cameras 2023/04/18
+                            cameraControls[cam_id].ClearFocusObject();
             }
         }
 
