@@ -362,7 +362,7 @@ namespace StoryGenerator.Utilities
 
         private void ZoomToObject(Camera camera, GameObject focusObject)
         {
-            if (focusObject == null)
+            if (focusObject == null || camera.name.Contains("New_Camera")) // Added new condition to disable focusing obj/area by diagonal cameras 2023/04/21
                 return;
 
             Bounds bounds = GameObjectUtils.GetBounds(focusObject);
@@ -375,27 +375,36 @@ namespace StoryGenerator.Utilities
         
         private void ZoomToBounds(Camera camera, Bounds bounds)
         {
-            if (bounds.extents == Vector3.zero) {
-                camera.transform.LookAt(bounds.center);
-            } else {
-                Vector3 center = bounds.center;
-                Vector3 toCenter = center - camera.transform.position;
-                Vector3 extents = bounds.extents;
-                float maxViewAngle = 0.0f;
+            if (!camera.name.Contains("New_Camera")) // Added this condition to disable focusing obj/area by diagonal cameras 2023/04/21
+            {
+                if (bounds.extents == Vector3.zero)
+                {
+                    camera.transform.LookAt(bounds.center);
+                }
+                else
+                {
+                    Vector3 center = bounds.center;
+                    Vector3 toCenter = center - camera.transform.position;
+                    Vector3 extents = bounds.extents;
+                    float maxViewAngle = 0.0f;
 
-                for (int xs = -1; xs <= 1; xs += 2) {
-                    for (int ys = -1; ys <= 1; ys += 2) {
-                        for (int zs = -1; zs <= 1; zs += 2) {
-                            Vector3 toAngle = center + new Vector3(extents.x * xs, extents.y * ys, extents.z * zs) - camera.transform.position;
-                            float angle = Vector3.Angle(toCenter, toAngle);
+                    for (int xs = -1; xs <= 1; xs += 2)
+                    {
+                        for (int ys = -1; ys <= 1; ys += 2)
+                        {
+                            for (int zs = -1; zs <= 1; zs += 2)
+                            {
+                                Vector3 toAngle = center + new Vector3(extents.x * xs, extents.y * ys, extents.z * zs) - camera.transform.position;
+                                float angle = Vector3.Angle(toCenter, toAngle);
 
-                            if (angle > maxViewAngle)
-                                maxViewAngle = angle;
+                                if (angle > maxViewAngle)
+                                    maxViewAngle = angle;
+                            }
                         }
                     }
+                    camera.transform.LookAt(center);
+                    ChangeFieldOfView(camera, maxViewAngle + 15.0f);
                 }
-                camera.transform.LookAt(center);
-                ChangeFieldOfView(camera, maxViewAngle + 15.0f);
             }
         }
 
