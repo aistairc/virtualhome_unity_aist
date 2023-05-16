@@ -38,7 +38,7 @@ namespace StoryGenerator
 
 
         private const int DefaultPort = 8080;
-        private const int DefaultTimeout = 10800000; // Edited to 3 hour (from 500000 to 10800000) 2023/02/28
+        private const int DefaultTimeout = 18000000; // Edited to 5 hour (from 500000 to 18000000) 2023/02/28
 
 
         //static ProcessingController processingController;
@@ -1407,6 +1407,59 @@ namespace StoryGenerator
                                         cameraControl = CreateFixedCameraControl(chc.gameObject, CameraExpander.char_cams[config.camera_mode[cam_id]].name, false);
                                         cam_ctrl = true;
                                     }
+                                    else
+                                    {
+                                        // Add new camera mode 2023/04/05
+                                        if (config.camera_mode[cam_id] == "SPECIFIED")
+                                        {
+                                            // This is same functionality with AUTO mode except this mode can specify which cameras only to use.
+                                            List<Camera> specifiedCameraList = new List<Camera>();
+                                            foreach (int index in config.specified_cameras)
+                                            {
+                                                specifiedCameraList.Add(cameras[index]);
+                                            }
+                                            AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
+                                            autoCameraControl.RandomizeCameras = config.randomize_execution;
+                                            autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
+                                            cameraControl = autoCameraControl;
+                                            cam_ctrl = true;
+                                        }
+                                        else
+                                        {
+                                            // Add new camera mode for one of the diagonal cameras 2023/04/17
+                                            if (config.camera_mode[cam_id] == "DIAGONAL1")
+                                            {
+                                                // This is same functionality with SPECIFIED camera mode.
+                                                List<Camera> specifiedCameraList = new List<Camera>();
+                                                foreach (int index in config.diagonal_cameras1)
+                                                {
+                                                    specifiedCameraList.Add(cameras[index]);
+                                                }
+                                                AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
+                                                autoCameraControl.RandomizeCameras = config.randomize_execution;
+                                                autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
+                                                cameraControl = autoCameraControl;
+                                                cam_ctrl = true;
+                                            }
+                                            else
+                                            {
+                                                if (config.camera_mode[cam_id] == "DIAGONAL2")
+                                                {
+                                                    // This is same functionality with SPECIFIED camera mode.
+                                                    List<Camera> specifiedCameraList = new List<Camera>();
+                                                    foreach (int index in config.diagonal_cameras2)
+                                                    {
+                                                        specifiedCameraList.Add(cameras[index]);
+                                                    }
+                                                    AutoCameraControl autoCameraControl = new AutoCameraControl(specifiedCameraList, chc.transform, new Vector3(0, 1.0f, 0));
+                                                    autoCameraControl.RandomizeCameras = config.randomize_execution;
+                                                    autoCameraControl.CameraChangeEvent += rec.UpdateCameraData;
+                                                    cameraControl = autoCameraControl;
+                                                    cam_ctrl = true;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -1833,6 +1886,9 @@ namespace StoryGenerator
         public bool recording = false;
         public bool skip_execution = false;
         public bool skip_animation = false;
+        public List<int> specified_cameras = new List<int>();
+        public List<int> diagonal_cameras1 = new List<int>();
+        public List<int> diagonal_cameras2 = new List<int>();
     }
 
     public class DataProviders
