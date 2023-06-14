@@ -2,15 +2,15 @@
 
 ## 1.1. Player Settings
 * Under Other Setting, set __Color Space__ to __Linear__.
-![alt text](Images4doc/color_space.png "Color Space")
+![alt text](assets/color_space.png "Color Space")
 
 ## 1.2. Quality Settings
 * Set level to __Ultra__.
-![alt text](Images4doc/quality_settings.png "Quality Setting")
+![alt text](assets/quality_settings.png "Quality Setting")
 * Disable __Anti Aliasing__ (not a issue for RGB but it will introduce undesired colors on segmentation GT).
 
 ## 1.3. Game Window
-![alt text](Images4doc/game_res.png "Game Resolution")
+![alt text](assets/game_res.png "Game Resolution")
 * Must use 375 x 250 fixed resolution for the game.
 * To add new resolution, inside the Game Window, click on menu on the right of __Display #__ where # is usually 1.
 * At the bottom of the drop down list, click on __+__ to add new resolution.
@@ -44,7 +44,7 @@
 # 3. (Option 2) - Master Renderer
 _For detailed documentation of how master rendering works, please refer to [master_renderer.md](master_renderer.md)._
 
-![alt text](Images4doc/master_settings.png "Master Setting")
+![alt text](assets/master_settings.png "Master Setting")
 
 * Recommend for rendering on multiple scenes and provides controls over which scene, characters, scripts and many other options as master.
 
