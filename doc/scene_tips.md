@@ -21,7 +21,7 @@ This section contains some tips to take into account if you want to generate you
 # 2. Lighting
 
 ### 2.1. Overview
-![alt text](assetsc/global_illumination.png "Global Illumination")
+![alt text](assets/global_illumination.png "Global Illumination")
 * _Source: https://unity3d.com/learn/tutorials/topics/graphics/introduction-lighting-and-rendering?playlist=17102_
 
 * Lighting is one of the key element that make our scene look more realistic
