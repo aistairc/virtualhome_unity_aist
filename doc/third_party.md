@@ -2,7 +2,7 @@
 
 VirtualHome uses a set of third party assets to include more 3D objects in the environment, and provide realistic motions for the agents. To make VirtualHome work, you will need to include these assets into the tool. 
 
-Note that *you do not need to purchase the assets* if you are only planning to use the executable, which you can download from [virtual-home.org](www.virtual-home.org). This section is only needed if you want to build your own executables, or render scripts using the editor.
+Note that *you do not need to purchase the assets* if you are only planning to use the executable, which you can download from [releases](https://github.com/aistairc/virtualhome_unity_aist/releases) of AIST. This section is only needed if you want to build your own executables, or render scripts using the editor.
 
 ## Assets needed
 We use the following assets in VirtualHome, which you will need to purchase to develop the tool.
