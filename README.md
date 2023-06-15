@@ -9,14 +9,31 @@ This repository contains the source code of the VirtualHome environment, a platf
 
 ## Table of Contents
 1. Overview
-2. Set Up
-3. Testing VirtualHome
-4. Documentation
+2. Modification by AIST
+3. Set Up
+4. Testing VirtualHome
+5. Documentation
 
 ## Overview
 VirtualHome is a platform to simulate human activities in household environments. Activities are represented as **activity programs** - lists of actions representing all the steps required to perform a given task. VirtualHome allows executing such programs to generate videos of the given activity. It also allows actions at every single step, and obtaining observations of the environment, making it a suitable platform for RL research.
 
 This repository contains the script files only.  A completed VirtualHome project will build the household environments, and translate the activity programs into low level actions that agents can execute. You can use it to modify VirtualHome to fit your research. If you want the complete project file, you have to contact the project supervisors. If you want to use the simulator as it is, you can ignore this repository, and download simulator from the [releases](https://github.com/aistairc/virtualhome_unity_aist/releases).
+
+## Modification by AIST
+### Addition and modification of objects
+AIST divided the dataset scenarios into two parts : the one which doesn't have any room transition and the other one with room transition. For the requirement of non-transition scenarios, we had to add some objects, which can't be added by [VirtualHome API](https://github.com/aistairc/virtualhome_aist), into each scene of the original VirtualHome household environments. We added them manually by dragging and dropping the prefabs into the scenes, and adjusted the position, rotation, etc.
+
+Since some of the objects had bugs and error, we had to restructure the hierarchy of the object or we had to adjust the transform of object's postion or rotation. In some case, we had to modify the Occlusion values especially when an object couldn't appear in different camera views. And we had to add Unity components to some of the objects. For example, we had to add NavMeshObstacle component to Door objects and Box Collider component to Clothes Shirt, Clothes Pant and Clothes Pile. Sometimes we had to change the rotation of the door. For some scenes, we had to replace the existing objects with new ones like Garbage Can and Toilet.
+
+### Addition of new four cameras
+From a suggestion describing the default camera views are not sufficient for current research, we had to add four new cameras in each room and in each scene. We placed each of the cameras at four of the upper corners of room ceiling with a proper transform value. For example,
+
+<p align="center">
+  <img height="300" src="doc/assets/demonstration_four_cameras.png">
+</p>
+
+### Creation of new camera modes
+As we started generating data for the room transition scenarios, we requrired more specific camera views which can capture every agent movements. The VirtualHome default camera modes can solve this problem but we also wanted the same camera views as the above four diagonal cameras. We needed to consider many different ways to get the solution. Finally, we concluded the issue by adding new camera modes : SPECIFIED and DIAGONAL. These new camera modes served the same functionalities as VirtualHome 'AUTO' default camera mode. The difference is we can set the desired camera indexes in these new modes. It made the camera view more specific and more stable than default one. If you want to know more detail about this, you can check it [here](https://github.com/aistairc/virtualhome_aist/tree/main/simulation/unity_simulator#modification-of-render_script-recorded-on-20230421).
 
 ## Setup
 ### Install Unity
