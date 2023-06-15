@@ -29,7 +29,7 @@ Clone the repository with the Unity Source Code.
 git clone https://github.com/aistairc/virtualhome_unity_aist.git
 ```
 
-And put this repository into the complete project set under ```Assets > Story Generator > Scripts > ```.
+And put this repository into the complete project set under ```Assets/Story Generator/Scripts/```.
 
 To test the simulator, we also recommend cloning the Unity API.
 ```bash
