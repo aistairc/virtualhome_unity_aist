@@ -1,5 +1,5 @@
 # Execution tips
-This section contains some tips to speed up rendering and execution in VirtualHome. We generally recommend to [build an executable](build_exec) when interacting with VirtualHome, instead of using the editor. This will be faster and will allow you to render in a server, or share the simulator without others purchasing assets.
+This section contains some tips to speed up rendering and execution in VirtualHome. We generally recommend to [build an executable](build_exec.md) when interacting with VirtualHome, instead of using the editor. This will be faster and will allow you to render in a server, or share the simulator without others purchasing assets.
 
 At times, you may want to render in the Unity Editor, to debug or test improvements in the simulator. Executing or rendering in the editor is generally slower than using the executable. Here are two tips to speed things up if you are testing the tool.
 
