@@ -16,7 +16,7 @@ A lightbox is a enclosure that lights up an object of interest (in the image abo
 * Copy __lightbox.json__ file under __ConfigExample__ to __Config__ directory
 * Adjust __lightbox.json__ (details are given on the following section)
 * Open __Lightbox__ scene under __Assets__/__Story Generator__/__Lightbox__
-* Create new Game window size whose width and height are equal (e.g. 500 x 500). This is because API to change camera resolution doesn't work in the Unity Editor. On how to add new Game window resolution, refer to [here](how2render.md#13-game-window)
+* Create new Game window size whose width and height are equal (e.g. 500 x 500). This is because API to change camera resolution doesn't work in the Unity Editor. On how to add new Game window resolution, refer to [here](old_how2render.md#13-game-window)
 * Play the scene
 * Once it's completed, open the __saveLocation__ directory provided in the __lightbox.json__ file.
 
