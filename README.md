@@ -1,6 +1,8 @@
-# VirtualHome Unity Source Code
+# VirtualHome-AIST Unity Source Code
 
-This repository contains the source code of the VirtualHome environment, a platform to simulate complex household activities via programs. If you just want to run the simulator you can go to the main [VirtualHome repository](https://github.com/aistairc/virtualhome_aist), containing the VirtualHome API and executables of the simulator for multiple platforms. You can check more information about the project in [virtual-home.org](https://www.virtual-home.org)
+This repository is an extended version from [VirtualHome Unity Source Code](https://github.com/xavierpuigf/virtualhome_unity).
+
+This repository contains the source code of the VirtualHome-AIST environment, an extended platform to simulate complex household activities via programs. If you just want to run the simulator you can go to the main [VirtualHome-AIST repository](https://github.com/aistairc/virtualhome_aist), containing the VirtualHome-AIST API and executables of the simulator for multiple platforms. You can check more information about the original project in [virtual-home.org](https://www.virtual-home.org)
 
 <p align="center">
   <img height="300" src="doc/assets/banner.gif">
